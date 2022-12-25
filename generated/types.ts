@@ -16,32 +16,27 @@ export type Scalars = {
 
 export type Class = {
   __typename?: 'Class';
-  Courses: Array<Course>;
+  _id: Scalars['String'];
+  courses: Array<Course>;
   desc: Scalars['String'];
   name: Scalars['String'];
   students: Array<User>;
+  university: University;
 };
 
 export type Course = {
   __typename?: 'Course';
   _id: Scalars['String'];
-  desc: Scalars['String'];
+  class: Class;
+  desc?: Maybe<Scalars['String']>;
+  grade: Scalars['String'];
+  professor: Scalars['String'];
   rating: Scalars['Float'];
   reviews: Array<Review>;
   sessions: Array<Session>;
   students: Array<User>;
   tutor: Array<Tutor>;
 };
-
-export enum Day {
-  Friday = 'friday',
-  Monday = 'monday',
-  Saturday = 'saturday',
-  Sunday = 'sunday',
-  Thursday = 'thursday',
-  Tuesday = 'tuesday',
-  Wednesday = 'wednesday'
-}
 
 export enum Direction {
   Asc = 'asc',
@@ -72,13 +67,89 @@ export type Paginate = {
 
 export type Query = {
   __typename?: 'Query';
+  class?: Maybe<Class>;
+  classes: Array<Class>;
+  course?: Maybe<Course>;
+  courses: Array<Course>;
+  review?: Maybe<Review>;
+  reviews: Array<Review>;
+  session?: Maybe<Session>;
+  sessions: Array<Session>;
+  tutor?: Maybe<Tutor>;
+  tutors: Array<Tutor>;
+  universities: Array<University>;
+  university?: Maybe<University>;
   user?: Maybe<User>;
   users: Array<User>;
 };
 
 
-export type QueryUserArgs = {
+export type QueryClassArgs = {
+  desc: Scalars['String'];
+};
+
+
+export type QueryClassesArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QueryCourseArgs = {
   _id: Scalars['String'];
+};
+
+
+export type QueryCoursesArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QueryReviewArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type QueryReviewsArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QuerySessionArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type QuerySessionsArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QueryTutorArgs = {
+  _id?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryTutorsArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QueryUniversitiesArgs = {
+  input?: InputMaybe<QueryOptions>;
+};
+
+
+export type QueryUniversityArgs = {
+  _id: Scalars['String'];
+  abbrev: Scalars['String'];
+};
+
+
+export type QueryUserArgs = {
+  _id?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -122,7 +193,7 @@ export type Session = {
 
 export type Slot = {
   __typename?: 'Slot';
-  day: Day;
+  day: Scalars['String'];
   slots: Array<Scalars['Int']>;
 };
 
@@ -173,7 +244,8 @@ export type User = {
   date: Scalars['String'];
   email: Scalars['String'];
   name: Scalars['String'];
-  university: University;
+  tutor?: Maybe<Tutor>;
+  university?: Maybe<University>;
   username: Scalars['String'];
 };
 
@@ -249,7 +321,6 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Class: ResolverTypeWrapper<Class>;
   Course: ResolverTypeWrapper<Course>;
-  Day: Day;
   Direction: Direction;
   Filter: Filter;
   FilterOperation: FilterOperation;
@@ -295,16 +366,21 @@ export type ResolversParentTypes = {
 };
 
 export type ClassResolvers<ContextType = any, ParentType extends ResolversParentTypes['Class'] = ResolversParentTypes['Class']> = {
-  Courses?: Resolver<Array<ResolversTypes['Course']>, ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  courses?: Resolver<Array<ResolversTypes['Course']>, ParentType, ContextType>;
   desc?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   students?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  university?: Resolver<ResolversTypes['University'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CourseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Course'] = ResolversParentTypes['Course']> = {
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  desc?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  class?: Resolver<ResolversTypes['Class'], ParentType, ContextType>;
+  desc?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  grade?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  professor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   reviews?: Resolver<Array<ResolversTypes['Review']>, ParentType, ContextType>;
   sessions?: Resolver<Array<ResolversTypes['Session']>, ParentType, ContextType>;
@@ -314,7 +390,19 @@ export type CourseResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, '_id'>>;
+  class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType, RequireFields<QueryClassArgs, 'desc'>>;
+  classes?: Resolver<Array<ResolversTypes['Class']>, ParentType, ContextType, Partial<QueryClassesArgs>>;
+  course?: Resolver<Maybe<ResolversTypes['Course']>, ParentType, ContextType, RequireFields<QueryCourseArgs, '_id'>>;
+  courses?: Resolver<Array<ResolversTypes['Course']>, ParentType, ContextType, Partial<QueryCoursesArgs>>;
+  review?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<QueryReviewArgs, '_id'>>;
+  reviews?: Resolver<Array<ResolversTypes['Review']>, ParentType, ContextType, Partial<QueryReviewsArgs>>;
+  session?: Resolver<Maybe<ResolversTypes['Session']>, ParentType, ContextType, RequireFields<QuerySessionArgs, '_id'>>;
+  sessions?: Resolver<Array<ResolversTypes['Session']>, ParentType, ContextType, Partial<QuerySessionsArgs>>;
+  tutor?: Resolver<Maybe<ResolversTypes['Tutor']>, ParentType, ContextType, Partial<QueryTutorArgs>>;
+  tutors?: Resolver<Array<ResolversTypes['Tutor']>, ParentType, ContextType, Partial<QueryTutorsArgs>>;
+  universities?: Resolver<Array<ResolversTypes['University']>, ParentType, ContextType, Partial<QueryUniversitiesArgs>>;
+  university?: Resolver<Maybe<ResolversTypes['University']>, ParentType, ContextType, RequireFields<QueryUniversityArgs, '_id' | 'abbrev'>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
 
@@ -339,7 +427,7 @@ export type SessionResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type SlotResolvers<ContextType = any, ParentType extends ResolversParentTypes['Slot'] = ResolversParentTypes['Slot']> = {
-  day?: Resolver<ResolversTypes['Day'], ParentType, ContextType>;
+  day?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slots?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -370,7 +458,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  university?: Resolver<ResolversTypes['University'], ParentType, ContextType>;
+  tutor?: Resolver<Maybe<ResolversTypes['Tutor']>, ParentType, ContextType>;
+  university?: Resolver<Maybe<ResolversTypes['University']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
