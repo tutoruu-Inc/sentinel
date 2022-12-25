@@ -1,9 +1,17 @@
 type Course {
     _id: String!
-    desc: String!
+    desc: String
+    class: Class!
     tutor: [Tutor!]!
     rating: Float!
+    grade: String!
+    professor: String!
     students: [User!]!
     reviews: [Review!]!
     sessions: [Session!]!
+}
+
+extend type Query {
+    course(_id: String!): Course
+    courses(input: QueryOptions): [Course!]!
 }

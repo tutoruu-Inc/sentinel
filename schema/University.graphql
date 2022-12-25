@@ -6,3 +6,9 @@ type University {
     classes: [Class!]!
     created_at: String!
 }
+
+extend type Query {
+    university(_id: String!): University
+    university(abbrev: String!): University
+    universities(input: QueryOptions): [University!]!
+}

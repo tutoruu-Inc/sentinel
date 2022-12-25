@@ -1,15 +1,5 @@
-enum Day {
-    sunday
-    monday
-    tuesday
-    wednesday
-    thursday
-    friday
-    saturday
-}
-
 type Slot {
-    day: Day!
+    day: String!
     slots: [Int!]!
 }
 
@@ -20,4 +10,10 @@ type Tutor {
   user: User!
   schedule: [Slot!]!
   date: String!
+}
+
+extend type Query {
+    tutor(_id: String): Tutor
+    tutor(username: String): Tutor
+    tutors(input: QueryOptions): [Tutor!]!
 }

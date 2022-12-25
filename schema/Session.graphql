@@ -7,3 +7,8 @@ type Session {
     payment_fulfilled: Boolean!
     payment_amount: Float!
 }
+
+extend type Query {
+    session(_id: String!): Session
+    sessions(input: QueryOptions): [Session!]!
+}

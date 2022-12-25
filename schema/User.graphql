@@ -3,12 +3,15 @@ type User {
     name: String!
     email: String!
     username: String!
-    university: University!
+    tutor: Tutor
+    university: University
     date: String!
     classes: [Class!]!
 }
 
 extend type Query {
-    user(_id: String!): User
+    user(_id: String): User
+    user(email: String): User
+    user(username: String): User
     users(input: QueryOptions): [User!]!
 }

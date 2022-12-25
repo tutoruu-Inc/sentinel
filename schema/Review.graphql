@@ -5,3 +5,9 @@ type Review {
     rating: Int!
     createdAt: String!
 }
+
+
+extend type Query {
+    review(_id: String!): Review
+    reviews(input: QueryOptions): [Review!]!
+}
