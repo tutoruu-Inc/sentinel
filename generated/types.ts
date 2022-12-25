@@ -38,6 +38,54 @@ export type Course = {
   tutor: Array<Tutor>;
 };
 
+export type CreateApplicationCourseInput = {
+  course: TutorApplicationCourseInput;
+};
+
+export type CreateClassInput = {
+  desc: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type CreateCourseInput = {
+  desc?: InputMaybe<Scalars['String']>;
+  grade: Scalars['String'];
+  one_class: Scalars['String'];
+  professor: Scalars['String'];
+};
+
+export type CreateReviewInput = {
+  course_id: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type CreateSessionInput = {
+  additional_info?: InputMaybe<Scalars['String']>;
+  course: Scalars['String'];
+  location?: InputMaybe<Scalars['String']>;
+  student: Scalars['String'];
+  topic?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateTutorInput = {
+  application_id?: InputMaybe<Scalars['String']>;
+  user_id?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateUniversityInput = {
+  abbrev: Scalars['String'];
+  country: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type CreateUserInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  phone: Scalars['String'];
+  university: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export enum Direction {
   Asc = 'asc',
   Desc = 'desc'
@@ -60,6 +108,171 @@ export enum FilterOperation {
   Nin = 'nin'
 }
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  acceptSession: Session;
+  createApplication: TutorApplication;
+  createApplicationCourse: TutorApplication;
+  createClass: Class;
+  createCourse: Course;
+  createReview: Review;
+  createSession: Session;
+  createTutor: Tutor;
+  createUniversity: University;
+  createUser: User;
+  deleteApplication: TutorApplication;
+  deleteClass: Class;
+  deleteCourse: Course;
+  deleteReview: Review;
+  deleteSession: Session;
+  deleteTutor: Tutor;
+  deleteUniversity: University;
+  deleteUser: User;
+  rejectSession: Session;
+  updateApplication: TutorApplication;
+  updateReview: Review;
+  updateSession: Session;
+  updateTutor: Tutor;
+  updateUniversity: University;
+  updateUser: User;
+};
+
+
+export type MutationAcceptSessionArgs = {
+  _id: Scalars['String'];
+  tutor_id: Scalars['String'];
+};
+
+
+export type MutationCreateApplicationArgs = {
+  user_id: Scalars['String'];
+};
+
+
+export type MutationCreateApplicationCourseArgs = {
+  input: CreateApplicationCourseInput;
+  user_id: Scalars['String'];
+};
+
+
+export type MutationCreateClassArgs = {
+  input: CreateClassInput;
+  university_id: Scalars['String'];
+};
+
+
+export type MutationCreateCourseArgs = {
+  input: CreateCourseInput;
+  tutor_id: Scalars['String'];
+};
+
+
+export type MutationCreateReviewArgs = {
+  input: CreateReviewInput;
+  user_id: Scalars['String'];
+};
+
+
+export type MutationCreateSessionArgs = {
+  input: CreateSessionInput;
+};
+
+
+export type MutationCreateTutorArgs = {
+  input?: InputMaybe<CreateTutorInput>;
+};
+
+
+export type MutationCreateUniversityArgs = {
+  input: CreateUniversityInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+
+export type MutationDeleteApplicationArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteClassArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteCourseArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteReviewArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteSessionArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteTutorArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteUniversityArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type MutationRejectSessionArgs = {
+  _id: Scalars['String'];
+  tutor_id: Scalars['String'];
+};
+
+
+export type MutationUpdateApplicationArgs = {
+  input: UpdateApplicationInput;
+  user_id: Scalars['String'];
+};
+
+
+export type MutationUpdateReviewArgs = {
+  _id: Scalars['String'];
+  input: UpdateReviewInput;
+};
+
+
+export type MutationUpdateSessionArgs = {
+  _id: Scalars['String'];
+  input: UpdateSessionInput;
+};
+
+
+export type MutationUpdateTutorArgs = {
+  input?: InputMaybe<UpdateTutorInput>;
+};
+
+
+export type MutationUpdateUniversityArgs = {
+  _id: Scalars['String'];
+  input: UpdateUniversityInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  _id: Scalars['String'];
+  input: UpdateUserInput;
+};
+
 export type Paginate = {
   limit?: InputMaybe<Scalars['Int']>;
   page?: InputMaybe<Scalars['Int']>;
@@ -67,6 +280,8 @@ export type Paginate = {
 
 export type Query = {
   __typename?: 'Query';
+  application?: Maybe<TutorApplication>;
+  applications: Array<TutorApplication>;
   class?: Maybe<Class>;
   classes: Array<Class>;
   course?: Maybe<Course>;
@@ -81,6 +296,16 @@ export type Query = {
   university?: Maybe<University>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+
+export type QueryApplicationArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type QueryApplicationsArgs = {
+  input?: InputMaybe<QueryOptions>;
 };
 
 
@@ -168,10 +393,10 @@ export type QueryOptions = {
 export type Review = {
   __typename?: 'Review';
   _id: Scalars['String'];
-  body: Scalars['String'];
   createdAt: Scalars['String'];
   rating: Scalars['Int'];
-  user: User;
+  student: User;
+  text: Scalars['String'];
 };
 
 export type Search = {
@@ -183,16 +408,27 @@ export type Search = {
 export type Session = {
   __typename?: 'Session';
   _id: Scalars['String'];
+  additional_info?: Maybe<Scalars['String']>;
   course: Course;
-  date: Scalars['String'];
+  created_date: Scalars['String'];
+  is_accepted: Scalars['Boolean'];
   is_completed: Scalars['Boolean'];
+  location?: Maybe<Scalars['String']>;
   payment_amount: Scalars['Float'];
   payment_fulfilled: Scalars['Boolean'];
+  rating: Scalars['Int'];
   student: User;
+  topic?: Maybe<Scalars['String']>;
+  tutor: Tutor;
 };
 
 export type Slot = {
   __typename?: 'Slot';
+  day: Scalars['String'];
+  slots: Array<Scalars['Int']>;
+};
+
+export type SlotInput = {
   day: Scalars['String'];
   slots: Array<Scalars['Int']>;
 };
@@ -222,9 +458,36 @@ export type Tutor = {
   _id: Scalars['String'];
   courses: Array<Course>;
   date: Scalars['String'];
+  in_person: Scalars['Boolean'];
   rate: Scalars['Float'];
   schedule: Array<Slot>;
   user: User;
+  zoom_link?: Maybe<Scalars['String']>;
+};
+
+export type TutorApplication = {
+  __typename?: 'TutorApplication';
+  _id: Scalars['String'];
+  answers: Array<Scalars['String']>;
+  classes: Array<TutorApplicationCourse>;
+  inperson?: Maybe<Scalars['Boolean']>;
+  rate?: Maybe<Scalars['Float']>;
+  step: Scalars['Int'];
+  transcript?: Maybe<Scalars['String']>;
+  zoom_link?: Maybe<Scalars['String']>;
+};
+
+export type TutorApplicationCourse = {
+  __typename?: 'TutorApplicationCourse';
+  class_info: Class;
+  grade?: Maybe<Scalars['String']>;
+  professor?: Maybe<Scalars['String']>;
+};
+
+export type TutorApplicationCourseInput = {
+  class_info: Scalars['String'];
+  grade?: InputMaybe<Scalars['String']>;
+  professor?: InputMaybe<Scalars['String']>;
 };
 
 export type University = {
@@ -237,13 +500,59 @@ export type University = {
   name: Scalars['String'];
 };
 
+export type UpdateApplicationInput = {
+  answers?: InputMaybe<Array<Scalars['String']>>;
+  inperson?: InputMaybe<Scalars['Boolean']>;
+  rate?: InputMaybe<Scalars['Float']>;
+  step: Scalars['Int'];
+  transcript?: InputMaybe<Scalars['String']>;
+  zoom_link?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateReviewInput = {
+  rating?: InputMaybe<Scalars['Int']>;
+  text?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateSessionInput = {
+  is_accepted: Scalars['Boolean'];
+  is_completed: Scalars['Boolean'];
+  payment_fulfilled: Scalars['Boolean'];
+  rating: Scalars['Int'];
+};
+
+export type UpdateTutorInput = {
+  in_person: Scalars['Boolean'];
+  rate: Scalars['Float'];
+  schedule: Array<SlotInput>;
+  zoom_link?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateUniversityInput = {
+  abbrev?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  locations?: InputMaybe<Array<Scalars['String']>>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateUserInput = {
+  bio?: InputMaybe<Scalars['String']>;
+  classOf?: InputMaybe<Scalars['String']>;
+  img_url?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['String'];
+  bio?: Maybe<Scalars['String']>;
   classes: Array<Class>;
   date: Scalars['String'];
   email: Scalars['String'];
+  img_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  phone: Scalars['String'];
   tutor?: Maybe<Tutor>;
   university?: Maybe<University>;
   username: Scalars['String'];
@@ -321,11 +630,20 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Class: ResolverTypeWrapper<Class>;
   Course: ResolverTypeWrapper<Course>;
+  CreateApplicationCourseInput: CreateApplicationCourseInput;
+  CreateClassInput: CreateClassInput;
+  CreateCourseInput: CreateCourseInput;
+  CreateReviewInput: CreateReviewInput;
+  CreateSessionInput: CreateSessionInput;
+  CreateTutorInput: CreateTutorInput;
+  CreateUniversityInput: CreateUniversityInput;
+  CreateUserInput: CreateUserInput;
   Direction: Direction;
   Filter: Filter;
   FilterOperation: FilterOperation;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Paginate: Paginate;
   Query: ResolverTypeWrapper<{}>;
   QueryOptions: QueryOptions;
@@ -333,12 +651,22 @@ export type ResolversTypes = {
   Search: Search;
   Session: ResolverTypeWrapper<Session>;
   Slot: ResolverTypeWrapper<Slot>;
+  SlotInput: SlotInput;
   Sort: Sort;
   SortingFunction: SortingFunction;
   String: ResolverTypeWrapper<Scalars['String']>;
   Timebox: Timebox;
   Tutor: ResolverTypeWrapper<Tutor>;
+  TutorApplication: ResolverTypeWrapper<TutorApplication>;
+  TutorApplicationCourse: ResolverTypeWrapper<TutorApplicationCourse>;
+  TutorApplicationCourseInput: TutorApplicationCourseInput;
   University: ResolverTypeWrapper<University>;
+  UpdateApplicationInput: UpdateApplicationInput;
+  UpdateReviewInput: UpdateReviewInput;
+  UpdateSessionInput: UpdateSessionInput;
+  UpdateTutorInput: UpdateTutorInput;
+  UpdateUniversityInput: UpdateUniversityInput;
+  UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -347,9 +675,18 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Class: Class;
   Course: Course;
+  CreateApplicationCourseInput: CreateApplicationCourseInput;
+  CreateClassInput: CreateClassInput;
+  CreateCourseInput: CreateCourseInput;
+  CreateReviewInput: CreateReviewInput;
+  CreateSessionInput: CreateSessionInput;
+  CreateTutorInput: CreateTutorInput;
+  CreateUniversityInput: CreateUniversityInput;
+  CreateUserInput: CreateUserInput;
   Filter: Filter;
   Float: Scalars['Float'];
   Int: Scalars['Int'];
+  Mutation: {};
   Paginate: Paginate;
   Query: {};
   QueryOptions: QueryOptions;
@@ -357,11 +694,21 @@ export type ResolversParentTypes = {
   Search: Search;
   Session: Session;
   Slot: Slot;
+  SlotInput: SlotInput;
   Sort: Sort;
   String: Scalars['String'];
   Timebox: Timebox;
   Tutor: Tutor;
+  TutorApplication: TutorApplication;
+  TutorApplicationCourse: TutorApplicationCourse;
+  TutorApplicationCourseInput: TutorApplicationCourseInput;
   University: University;
+  UpdateApplicationInput: UpdateApplicationInput;
+  UpdateReviewInput: UpdateReviewInput;
+  UpdateSessionInput: UpdateSessionInput;
+  UpdateTutorInput: UpdateTutorInput;
+  UpdateUniversityInput: UpdateUniversityInput;
+  UpdateUserInput: UpdateUserInput;
   User: User;
 };
 
@@ -389,7 +736,37 @@ export type CourseResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationAcceptSessionArgs, '_id' | 'tutor_id'>>;
+  createApplication?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationCreateApplicationArgs, 'user_id'>>;
+  createApplicationCourse?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationCreateApplicationCourseArgs, 'input' | 'user_id'>>;
+  createClass?: Resolver<ResolversTypes['Class'], ParentType, ContextType, RequireFields<MutationCreateClassArgs, 'input' | 'university_id'>>;
+  createCourse?: Resolver<ResolversTypes['Course'], ParentType, ContextType, RequireFields<MutationCreateCourseArgs, 'input' | 'tutor_id'>>;
+  createReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'input' | 'user_id'>>;
+  createSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationCreateSessionArgs, 'input'>>;
+  createTutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType, Partial<MutationCreateTutorArgs>>;
+  createUniversity?: Resolver<ResolversTypes['University'], ParentType, ContextType, RequireFields<MutationCreateUniversityArgs, 'input'>>;
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  deleteApplication?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationDeleteApplicationArgs, '_id'>>;
+  deleteClass?: Resolver<ResolversTypes['Class'], ParentType, ContextType, RequireFields<MutationDeleteClassArgs, '_id'>>;
+  deleteCourse?: Resolver<ResolversTypes['Course'], ParentType, ContextType, RequireFields<MutationDeleteCourseArgs, '_id'>>;
+  deleteReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationDeleteReviewArgs, '_id'>>;
+  deleteSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationDeleteSessionArgs, '_id'>>;
+  deleteTutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType, RequireFields<MutationDeleteTutorArgs, '_id'>>;
+  deleteUniversity?: Resolver<ResolversTypes['University'], ParentType, ContextType, RequireFields<MutationDeleteUniversityArgs, '_id'>>;
+  deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, '_id'>>;
+  rejectSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationRejectSessionArgs, '_id' | 'tutor_id'>>;
+  updateApplication?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationUpdateApplicationArgs, 'input' | 'user_id'>>;
+  updateReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, '_id' | 'input'>>;
+  updateSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationUpdateSessionArgs, '_id' | 'input'>>;
+  updateTutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType, Partial<MutationUpdateTutorArgs>>;
+  updateUniversity?: Resolver<ResolversTypes['University'], ParentType, ContextType, RequireFields<MutationUpdateUniversityArgs, '_id' | 'input'>>;
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, '_id' | 'input'>>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  application?: Resolver<Maybe<ResolversTypes['TutorApplication']>, ParentType, ContextType, RequireFields<QueryApplicationArgs, '_id'>>;
+  applications?: Resolver<Array<ResolversTypes['TutorApplication']>, ParentType, ContextType, Partial<QueryApplicationsArgs>>;
   class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType, RequireFields<QueryClassArgs, '_id'>>;
   classes?: Resolver<Array<ResolversTypes['Class']>, ParentType, ContextType, Partial<QueryClassesArgs>>;
   course?: Resolver<Maybe<ResolversTypes['Course']>, ParentType, ContextType, RequireFields<QueryCourseArgs, '_id'>>;
@@ -408,21 +785,27 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = {
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  student?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type SessionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Session'] = ResolversParentTypes['Session']> = {
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  additional_info?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   course?: Resolver<ResolversTypes['Course'], ParentType, ContextType>;
-  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  created_date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  is_accepted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   is_completed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   payment_amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   payment_fulfilled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   student?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  topic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -436,9 +819,30 @@ export type TutorResolvers<ContextType = any, ParentType extends ResolversParent
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   courses?: Resolver<Array<ResolversTypes['Course']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  in_person?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   rate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   schedule?: Resolver<Array<ResolversTypes['Slot']>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  zoom_link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TutorApplicationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TutorApplication'] = ResolversParentTypes['TutorApplication']> = {
+  _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  answers?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  classes?: Resolver<Array<ResolversTypes['TutorApplicationCourse']>, ParentType, ContextType>;
+  inperson?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  rate?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  step?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  transcript?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  zoom_link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TutorApplicationCourseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TutorApplicationCourse'] = ResolversParentTypes['TutorApplicationCourse']> = {
+  class_info?: Resolver<ResolversTypes['Class'], ParentType, ContextType>;
+  grade?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  professor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -454,10 +858,13 @@ export type UniversityResolvers<ContextType = any, ParentType extends ResolversP
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   classes?: Resolver<Array<ResolversTypes['Class']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  img_url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tutor?: Resolver<Maybe<ResolversTypes['Tutor']>, ParentType, ContextType>;
   university?: Resolver<Maybe<ResolversTypes['University']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -467,11 +874,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Class?: ClassResolvers<ContextType>;
   Course?: CourseResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Review?: ReviewResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   Slot?: SlotResolvers<ContextType>;
   Tutor?: TutorResolvers<ContextType>;
+  TutorApplication?: TutorApplicationResolvers<ContextType>;
+  TutorApplicationCourse?: TutorApplicationCourseResolvers<ContextType>;
   University?: UniversityResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };

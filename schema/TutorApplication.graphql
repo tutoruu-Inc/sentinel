@@ -1,0 +1,53 @@
+type TutorApplicationCourse {
+  class_info: Class!
+  grade: String
+  professor: String
+}
+
+type TutorApplication {
+  _id: String!
+  step: Int!
+  transcript: String
+  zoom_link: String
+  inperson: Boolean
+  classes: [TutorApplicationCourse!]!
+  answers: [String!]!
+  rate: Float
+}
+
+extend type Query {
+  application(_id: String!): TutorApplication
+  applications(input: QueryOptions): [TutorApplication!]!
+}
+
+input UpdateApplicationInput {
+  step: Int!
+  transcript: String
+  zoom_link: String
+  inperson: Boolean
+  answers: [String!]
+  rate: Float
+}
+
+input TutorApplicationCourseInput {
+  class_info: String!
+  grade: String
+  professor: String
+}
+
+input CreateApplicationCourseInput {
+  course: TutorApplicationCourseInput!
+}
+
+extend type Mutation {
+  createApplication(user_id: String!): TutorApplication!
+  updateApplication(
+    user_id: String!
+    input: UpdateApplicationInput!
+  ): TutorApplication!
+  createApplicationCourse(
+    user_id: String!
+    input: CreateApplicationCourseInput!
+  ): TutorApplication!
+  deleteApplication(_id: String!): TutorApplication!
+}

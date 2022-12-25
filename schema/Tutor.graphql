@@ -3,6 +3,11 @@ type Slot {
     slots: [Int!]!
 }
 
+input SlotInput {
+    day: String!
+    slots: [Int!]!
+}
+
 type Tutor {
   _id: String!
   courses: [Course!]!
@@ -10,10 +15,30 @@ type Tutor {
   user: User!
   schedule: [Slot!]!
   date: String!
+  in_person: Boolean!
+  zoom_link: String
 }
 
 extend type Query {
     tutor(_id: String): Tutor
     tutor(username: String): Tutor
     tutors(input: QueryOptions): [Tutor!]!
+}
+
+input CreateTutorInput {
+    application_id: String
+    user_id: String
+}
+
+input UpdateTutorInput {
+    rate: Float!
+    schedule: [SlotInput!]!
+    in_person: Boolean!
+    zoom_link: String
+}
+
+extend type Mutation {
+    createTutor(input: CreateTutorInput): Tutor!
+    updateTutor(input: UpdateTutorInput): Tutor!
+    deleteTutor(_id: String!): Tutor!
 }

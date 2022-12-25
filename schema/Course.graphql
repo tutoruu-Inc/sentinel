@@ -15,3 +15,15 @@ extend type Query {
     course(_id: String!): Course
     courses(input: QueryOptions): [Course!]!
 }
+
+input CreateCourseInput {
+    desc: String
+    one_class: String!
+    grade: String!
+    professor: String!
+}
+
+extend type Mutation {
+    createCourse(tutor_id: String!, input: CreateCourseInput!): Course!
+    deleteCourse(_id: String!): Course!
+}

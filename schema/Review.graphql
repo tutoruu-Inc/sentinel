@@ -1,7 +1,7 @@
 type Review {
     _id: String!
-    user: User!
-    body: String!
+    student: User!
+    text: String!
     rating: Int!
     createdAt: String!
 }
@@ -10,4 +10,20 @@ type Review {
 extend type Query {
     review(_id: String!): Review
     reviews(input: QueryOptions): [Review!]!
+}
+
+input CreateReviewInput {
+    course_id: String!
+    text: String!
+}
+
+input UpdateReviewInput {
+    text: String
+    rating: Int
+}
+
+extend type Mutation {
+    createReview(user_id: String!, input: CreateReviewInput!): Review!
+    updateReview(_id: String!, input: UpdateReviewInput!): Review!
+    deleteReview(_id: String!): Review!
 }

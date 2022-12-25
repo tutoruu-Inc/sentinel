@@ -11,3 +11,13 @@ extend type Query {
     class(_id: String!): Class
     classes(input: QueryOptions): [Class!]!
 }
+
+input CreateClassInput {
+    name: String!
+    desc: String!
+}
+
+extend type Mutation {
+    createClass(university_id: String!, input: CreateClassInput!): Class!
+    deleteClass(_id: String!): Class!
+}

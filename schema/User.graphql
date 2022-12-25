@@ -3,6 +3,9 @@ type User {
     name: String!
     email: String!
     username: String!
+    img_url: String
+    bio: String
+    phone: String!
     tutor: Tutor
     university: University
     date: String!
@@ -14,4 +17,26 @@ extend type Query {
     user(email: String): User
     user(username: String): User
     users(input: QueryOptions): [User!]!
+}
+
+input CreateUserInput {
+    name: String!
+    email: String!
+    username: String!
+    phone: String!
+    university: String!
+}
+
+input UpdateUserInput {
+    name: String
+    phone: String
+    bio: String
+    classOf: String
+    img_url: String
+}
+
+extend type Mutation {
+    createUser(input: CreateUserInput!): User!
+    updateUser(_id: String!, input: UpdateUserInput!): User!
+    deleteUser(_id: String!): User!
 }
