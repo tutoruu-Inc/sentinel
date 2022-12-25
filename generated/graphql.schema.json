@@ -544,7 +544,7 @@
             "description": null,
             "args": [
               {
-                "name": "desc",
+                "name": "_id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

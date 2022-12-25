@@ -85,7 +85,7 @@ export type Query = {
 
 
 export type QueryClassArgs = {
-  desc: Scalars['String'];
+  _id: Scalars['String'];
 };
 
 
@@ -390,7 +390,7 @@ export type CourseResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType, RequireFields<QueryClassArgs, 'desc'>>;
+  class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType, RequireFields<QueryClassArgs, '_id'>>;
   classes?: Resolver<Array<ResolversTypes['Class']>, ParentType, ContextType, Partial<QueryClassesArgs>>;
   course?: Resolver<Maybe<ResolversTypes['Course']>, ParentType, ContextType, RequireFields<QueryCourseArgs, '_id'>>;
   courses?: Resolver<Array<ResolversTypes['Course']>, ParentType, ContextType, Partial<QueryCoursesArgs>>;

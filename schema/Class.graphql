@@ -9,6 +9,5 @@ type Class {
 
 extend type Query {
     class(_id: String!): Class
-    class(desc: String!): Class
     classes(input: QueryOptions): [Class!]!
 }
