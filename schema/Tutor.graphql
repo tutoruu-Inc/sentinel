@@ -1,0 +1,23 @@
+enum Day {
+    sunday
+    monday
+    tuesday
+    wednesday
+    thursday
+    friday
+    saturday
+}
+
+type Slot {
+    day: Day!
+    slots: [Int!]!
+}
+
+type Tutor {
+  _id: String!
+  courses: [Course!]!
+  rate: Float!
+  user: User!
+  schedule: [Slot!]!
+  date: String!
+}

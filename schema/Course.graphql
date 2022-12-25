@@ -1,0 +1,9 @@
+type Course {
+    _id: String!
+    desc: String!
+    tutor: [Tutor!]!
+    rating: Float!
+    students: [User!]!
+    reviews: [Review!]!
+    sessions: [Session!]!
+}

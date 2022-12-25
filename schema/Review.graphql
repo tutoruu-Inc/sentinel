@@ -1,0 +1,7 @@
+type Review {
+    _id: String!
+    user: User!
+    body: String!
+    rating: Int!
+    createdAt: String!
+}

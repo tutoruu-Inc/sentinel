@@ -1,0 +1,6 @@
+type Class {
+    name: String!
+    desc: String!
+    students: [User!]!
+    Courses: [Course!]!
+}

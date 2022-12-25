@@ -1,0 +1,14 @@
+type User {
+    _id: String!
+    name: String!
+    email: String!
+    username: String!
+    university: University!
+    date: String!
+    classes: [Class!]!
+}
+
+extend type Query {
+    user(_id: String!): User
+    users(input: QueryOptions): [User!]!
+}

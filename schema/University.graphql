@@ -1,0 +1,8 @@
+type University {
+    _id: String!
+    name: String!
+    abbrev: String!
+    country: String!
+    classes: [Class!]!
+    created_at: String!
+}

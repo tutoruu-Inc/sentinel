@@ -1,0 +1,9 @@
+type Session {
+    _id: String!
+    course: Course!
+    student: User!
+    date: String!
+    is_completed: Boolean!
+    payment_fulfilled: Boolean!
+    payment_amount: Float!
+}
