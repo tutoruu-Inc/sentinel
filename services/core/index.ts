@@ -1,5 +1,5 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { University, User, Class, Course, Tutor } from "../../generated/types";
+import { University, User, Class, Course, Tutor, CreateUserInput, UpdateUserInput } from "../../generated/types";
 
 export * from "./course.js";
 export * from "./user.js";
@@ -8,7 +8,7 @@ export * from "./university.js";
 export * from "./tutor.js";
 
 class CCoreAPI extends RESTDataSource {
-  override baseURL = "https://api.tutoruu.com/api/";
+  override baseURL = "https://core-dev-8pwnv.ondigitalocean.app/api2/api/";
 
   async getUser({
     _id,
@@ -65,6 +65,15 @@ class CCoreAPI extends RESTDataSource {
   async getCourses(): Promise<Course[]> {
     const { courses } = await this.get<{ courses: Course[] }>("course");
     return courses;
+  }
+  async createUser(user: CreateUserInput): Promise<User> {
+    return this.post<User>("user", { body: user });
+  }
+  async updateUser(id: string, user: UpdateUserInput): Promise<User> {
+    return this.patch<User>(`user/${id}/fields`, { body: { fields: user }});
+  }
+  async deleteUser(id: string): Promise<User> {
+    return this.delete<User>(`user/${id}`);
   }
 }
 

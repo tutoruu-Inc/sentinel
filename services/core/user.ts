@@ -11,6 +11,11 @@ export const userResolvers: Resolvers = {
     users: async (_, args) =>
       await queryable(() => CoreAPI.getUsers(), args.input),
   },
+  Mutation: {
+    createUser: async (_, args) => await CoreAPI.createUser(args.input),
+    updateUser: async (_, args) => await CoreAPI.updateUser(args._id, args.input),
+    deleteUser: async (_, args) => await CoreAPI.deleteUser(args._id),
+  },
   User: {
     classes: async (parent) => {
       if (parent.classes.length === 0) return [];
