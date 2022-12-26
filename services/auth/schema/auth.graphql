@@ -1,0 +1,43 @@
+input registerUserInput {
+  name: String!
+  username: String!
+  email: String!
+  university_id: Int!
+  password: String!
+  password_confirmation: String!
+}
+
+type AuthData {
+  token: String
+  user: FeedsUser
+  original: AuthPayloadData
+}
+
+type AuthPayloadData {
+  data: AuthData
+}
+
+type AuthErrorMessage {
+  message: String
+}
+
+type OriginalAuthErrorMessage {
+  original: AuthErrorMessage
+}
+
+type AuthPayload {
+  data: AuthData
+  code: Int
+  message: String
+  errors: OriginalAuthErrorMessage
+}
+
+extend type Mutation {
+  login(email: String!, password: String!): AuthPayload!
+  signup(input: registerUserInput): AuthPayload!
+  resetPassword(email: String!): Boolean!
+  changePassword(password: String!, password_confirmation: String!): Boolean!
+  logout: Boolean!
+  verifyEmail(token: String!): Boolean!
+  sendVerificationEmail: Boolean!
+}

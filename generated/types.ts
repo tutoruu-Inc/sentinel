@@ -14,6 +14,31 @@ export type Scalars = {
   Float: number;
 };
 
+export type AuthData = {
+  __typename?: 'AuthData';
+  original?: Maybe<AuthPayloadData>;
+  token?: Maybe<Scalars['String']>;
+  user?: Maybe<FeedsUser>;
+};
+
+export type AuthErrorMessage = {
+  __typename?: 'AuthErrorMessage';
+  message?: Maybe<Scalars['String']>;
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  code?: Maybe<Scalars['Int']>;
+  data?: Maybe<AuthData>;
+  errors?: Maybe<OriginalAuthErrorMessage>;
+  message?: Maybe<Scalars['String']>;
+};
+
+export type AuthPayloadData = {
+  __typename?: 'AuthPayloadData';
+  data?: Maybe<AuthData>;
+};
+
 export type Class = {
   __typename?: 'Class';
   _id: Scalars['String'];
@@ -91,6 +116,17 @@ export enum Direction {
   Desc = 'desc'
 }
 
+export type FeedsUser = {
+  __typename?: 'FeedsUser';
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  is_tutor?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  tutor_id?: Maybe<Scalars['String']>;
+  university_id: Scalars['Int'];
+  username: Scalars['String'];
+};
+
 export type Filter = {
   function: FilterOperation;
   prop: Scalars['String'];
@@ -111,6 +147,7 @@ export enum FilterOperation {
 export type Mutation = {
   __typename?: 'Mutation';
   acceptSession: Session;
+  changePassword: Scalars['Boolean'];
   createApplication: TutorApplication;
   createApplicationCourse: TutorApplication;
   createClass: Class;
@@ -128,19 +165,31 @@ export type Mutation = {
   deleteTutor: Tutor;
   deleteUniversity: University;
   deleteUser: User;
+  login: AuthPayload;
+  logout: Scalars['Boolean'];
   rejectSession: Session;
+  resetPassword: Scalars['Boolean'];
+  sendVerificationEmail: Scalars['Boolean'];
+  signup: AuthPayload;
   updateApplication: TutorApplication;
   updateReview: Review;
   updateSession: Session;
   updateTutor: Tutor;
   updateUniversity: University;
   updateUser: User;
+  verifyEmail: Scalars['Boolean'];
 };
 
 
 export type MutationAcceptSessionArgs = {
   _id: Scalars['String'];
   tutor_id: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  password: Scalars['String'];
+  password_confirmation: Scalars['String'];
 };
 
 
@@ -233,9 +282,25 @@ export type MutationDeleteUserArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
 export type MutationRejectSessionArgs = {
   _id: Scalars['String'];
   tutor_id: Scalars['String'];
+};
+
+
+export type MutationResetPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationSignupArgs = {
+  input?: InputMaybe<RegisterUserInput>;
 };
 
 
@@ -271,6 +336,16 @@ export type MutationUpdateUniversityArgs = {
 export type MutationUpdateUserArgs = {
   _id: Scalars['String'];
   input: UpdateUserInput;
+};
+
+
+export type MutationVerifyEmailArgs = {
+  token: Scalars['String'];
+};
+
+export type OriginalAuthErrorMessage = {
+  __typename?: 'OriginalAuthErrorMessage';
+  original?: Maybe<AuthErrorMessage>;
 };
 
 export type Paginate = {
@@ -558,6 +633,15 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type RegisterUserInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
+  password_confirmation: Scalars['String'];
+  university_id: Scalars['Int'];
+  username: Scalars['String'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -627,6 +711,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  AuthData: ResolverTypeWrapper<AuthData>;
+  AuthErrorMessage: ResolverTypeWrapper<AuthErrorMessage>;
+  AuthPayload: ResolverTypeWrapper<AuthPayload>;
+  AuthPayloadData: ResolverTypeWrapper<AuthPayloadData>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Class: ResolverTypeWrapper<Class>;
   Course: ResolverTypeWrapper<Course>;
@@ -639,11 +727,13 @@ export type ResolversTypes = {
   CreateUniversityInput: CreateUniversityInput;
   CreateUserInput: CreateUserInput;
   Direction: Direction;
+  FeedsUser: ResolverTypeWrapper<FeedsUser>;
   Filter: Filter;
   FilterOperation: FilterOperation;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  OriginalAuthErrorMessage: ResolverTypeWrapper<OriginalAuthErrorMessage>;
   Paginate: Paginate;
   Query: ResolverTypeWrapper<{}>;
   QueryOptions: QueryOptions;
@@ -668,10 +758,15 @@ export type ResolversTypes = {
   UpdateUniversityInput: UpdateUniversityInput;
   UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
+  registerUserInput: RegisterUserInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  AuthData: AuthData;
+  AuthErrorMessage: AuthErrorMessage;
+  AuthPayload: AuthPayload;
+  AuthPayloadData: AuthPayloadData;
   Boolean: Scalars['Boolean'];
   Class: Class;
   Course: Course;
@@ -683,10 +778,12 @@ export type ResolversParentTypes = {
   CreateTutorInput: CreateTutorInput;
   CreateUniversityInput: CreateUniversityInput;
   CreateUserInput: CreateUserInput;
+  FeedsUser: FeedsUser;
   Filter: Filter;
   Float: Scalars['Float'];
   Int: Scalars['Int'];
   Mutation: {};
+  OriginalAuthErrorMessage: OriginalAuthErrorMessage;
   Paginate: Paginate;
   Query: {};
   QueryOptions: QueryOptions;
@@ -710,6 +807,32 @@ export type ResolversParentTypes = {
   UpdateUniversityInput: UpdateUniversityInput;
   UpdateUserInput: UpdateUserInput;
   User: User;
+  registerUserInput: RegisterUserInput;
+};
+
+export type AuthDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthData'] = ResolversParentTypes['AuthData']> = {
+  original?: Resolver<Maybe<ResolversTypes['AuthPayloadData']>, ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['FeedsUser']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuthErrorMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthErrorMessage'] = ResolversParentTypes['AuthErrorMessage']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = {
+  code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Maybe<ResolversTypes['AuthData']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<ResolversTypes['OriginalAuthErrorMessage']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuthPayloadDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayloadData'] = ResolversParentTypes['AuthPayloadData']> = {
+  data?: Resolver<Maybe<ResolversTypes['AuthData']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ClassResolvers<ContextType = any, ParentType extends ResolversParentTypes['Class'] = ResolversParentTypes['Class']> = {
@@ -736,8 +859,20 @@ export type CourseResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FeedsUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedsUser'] = ResolversParentTypes['FeedsUser']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  is_tutor?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tutor_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  university_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   acceptSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationAcceptSessionArgs, '_id' | 'tutor_id'>>;
+  changePassword?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'password' | 'password_confirmation'>>;
   createApplication?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationCreateApplicationArgs, 'user_id'>>;
   createApplicationCourse?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationCreateApplicationCourseArgs, 'input' | 'user_id'>>;
   createClass?: Resolver<ResolversTypes['Class'], ParentType, ContextType, RequireFields<MutationCreateClassArgs, 'input' | 'university_id'>>;
@@ -755,13 +890,24 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType, RequireFields<MutationDeleteTutorArgs, '_id'>>;
   deleteUniversity?: Resolver<ResolversTypes['University'], ParentType, ContextType, RequireFields<MutationDeleteUniversityArgs, '_id'>>;
   deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, '_id'>>;
+  login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   rejectSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationRejectSessionArgs, '_id' | 'tutor_id'>>;
+  resetPassword?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'email'>>;
+  sendVerificationEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  signup?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, Partial<MutationSignupArgs>>;
   updateApplication?: Resolver<ResolversTypes['TutorApplication'], ParentType, ContextType, RequireFields<MutationUpdateApplicationArgs, 'input' | 'user_id'>>;
   updateReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, '_id' | 'input'>>;
   updateSession?: Resolver<ResolversTypes['Session'], ParentType, ContextType, RequireFields<MutationUpdateSessionArgs, '_id' | 'input'>>;
   updateTutor?: Resolver<ResolversTypes['Tutor'], ParentType, ContextType, Partial<MutationUpdateTutorArgs>>;
   updateUniversity?: Resolver<ResolversTypes['University'], ParentType, ContextType, RequireFields<MutationUpdateUniversityArgs, '_id' | 'input'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, '_id' | 'input'>>;
+  verifyEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationVerifyEmailArgs, 'token'>>;
+};
+
+export type OriginalAuthErrorMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['OriginalAuthErrorMessage'] = ResolversParentTypes['OriginalAuthErrorMessage']> = {
+  original?: Resolver<Maybe<ResolversTypes['AuthErrorMessage']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -872,9 +1018,15 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  AuthData?: AuthDataResolvers<ContextType>;
+  AuthErrorMessage?: AuthErrorMessageResolvers<ContextType>;
+  AuthPayload?: AuthPayloadResolvers<ContextType>;
+  AuthPayloadData?: AuthPayloadDataResolvers<ContextType>;
   Class?: ClassResolvers<ContextType>;
   Course?: CourseResolvers<ContextType>;
+  FeedsUser?: FeedsUserResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  OriginalAuthErrorMessage?: OriginalAuthErrorMessageResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Review?: ReviewResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
