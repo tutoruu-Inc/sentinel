@@ -2,7 +2,7 @@
 	"name": "sentinel",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "npm run build && concurrently \"npx tsc -p ./config/tsconfig.json --watch\" \"nodemon -q dist/server.js\"",
+		"dev": "concurrently \"npx tsc -p ./config/tsconfig.json --watch\" \"nodemon -q dist/server.js\"",
 		"build": "node ./generators/build.js",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --config ./config/codegen.yml",

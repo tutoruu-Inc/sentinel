@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import fs from "fs/promises";
 export const writeService = async (
   name: string,
   schema: string,
@@ -8,7 +8,7 @@ export const writeService = async (
     await fs.rm(`./services/${name}`, { recursive: true });
   } catch (err) {
     const error = err satisfies unknown as { code: string; errno: number };
-    if (error.code !== 'ENOENT') {
+    if (error.code !== "ENOENT") {
       console.error(err);
       return false;
     }
@@ -25,40 +25,41 @@ export const writeService = async (
 };
 
 export const writeLaunchpad = async (script: string) => {
-  await fs.writeFile('./services/launchpad.ts', script);
+  await fs.writeFile("./services/launchpad.ts", script);
 };
 
 export const writeSchema = async (schema: string) => {
   try {
-    await fs.writeFile('./services/schema.graphql', schema);
+    await fs.writeFile("./services/schema.graphql", schema);
   } catch (err) {
     const error = err satisfies unknown as { code: string; errno: number };
-    if (error.code !== 'ENOENT') {
+    if (error.code !== "ENOENT") {
       console.error(err);
       return false;
     }
     try {
-      await fs.mkdir('./services');
+      await fs.mkdir("./services");
     } catch (err) {}
-    await fs.writeFile('./services/schema.graphql', schema);
+    await fs.writeFile("./services/schema.graphql", schema);
   }
 };
 export const writeServer = async () => {
   await fs.writeFile(
-    './server.ts',
+    "./server.ts",
     `import { ApolloServer, BaseContext } from "@apollo/server";\n` +
       `import { startStandaloneServer } from "@apollo/server/standalone";\n\n` +
       `import { resolvers, typeDefs } from "./services/launchpad.js";\n\n` +
       `const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });\n\n` +
-      `await startStandaloneServer(server, { listen: { port: 8000 } });\n`
+      `await startStandaloneServer(server, { listen: { port: 8000 } });\n\n` +
+      `console.log("Sentinel up and running...")\n`
   );
 };
 export const writeUtils = async () => {
   try {
-    await fs.mkdir('./utils');
+    await fs.mkdir("./utils");
   } catch (err) {}
   await fs.writeFile(
-    './utils/Query.ts',
+    "./utils/Query.ts",
     `import Fuse from "fuse.js";
     import { filterByOperation } from "./parser.js";
     import { QueryOptions } from "../generated/types.js";
@@ -213,7 +214,7 @@ export const writeUtils = async () => {
   );
 
   await fs.writeFile(
-    './utils/parser.ts',
+    "./utils/parser.ts",
     `import { FilterOperation } from "../generated/types.js";
 
     export function filterByOperation<T>(

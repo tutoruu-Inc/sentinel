@@ -10,7 +10,6 @@ const typeDefs: string[] = [];
 schema.data.services.forEach((service: Service) => {
   const resolvers: { functions: string; name: string }[] = [];
   const schemas: string[] = [];
-  console.log('✓ Created Service: ' + service.name);
   service.objects.forEach((object: Object) => {
     schemas.push(generateGQLSchema(object));
     resolvers.push({
@@ -22,18 +21,15 @@ schema.data.services.forEach((service: Service) => {
   const api = generateAPI(service, resv);
   writeService(service.slug, schemas.join('\n'), api);
   typeDefs.push(schemas.join('\n'));
+  console.log('✓ Created Service: ' + service.name);
 });
 
 const fieldTypes = schema.data.fieldType
   ? [...schema.data.fieldTypes, schema.data.fieldType]
   : schema.data.fieldTypes;
 const types = await generateBaseSchema(fieldTypes);
-console.log('✓ Base types Generated');
 
 typeDefs.unshift('\n' + types);
 await generateLauncher(schema.data.services, typeDefs);
-console.log('✓ App launcher');
 
 await writeUtils();
-console.log('✓ Utils');
-console.log('✓ Server file');
