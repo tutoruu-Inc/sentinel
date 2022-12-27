@@ -50,7 +50,8 @@ export const writeServer = async () => {
       `import { startStandaloneServer } from "@apollo/server/standalone";\n\n` +
       `import { resolvers, typeDefs } from "./services/launchpad.js";\n\n` +
       `const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });\n\n` +
-      `await startStandaloneServer(server, { listen: { port: process.env.PORT ?? 8000 } });\n\n` +
+      `const port = process.env.PORT ?? "8000" as string;\n` +
+      `await startStandaloneServer(server, { listen: { port } });\n\n` +
       `console.log("Sentinel up and running...")\n`
   );
 };
