@@ -1,9 +1,0 @@
-type FeedsUser {
-  id: Int!
-  name: String!
-  username: String!
-  email: String!
-  university_id: Int!
-  is_tutor: Int
-  tutor_id: String
-}
