@@ -14,7 +14,7 @@ const parseField = (field: Field): string =>
 
 const parseFunction = (fn: Mutation | Query): string =>
   `${fn.name}${
-    fn.inputs
+    fn.inputs && fn.inputs.length > 0
       ? `(${fn.inputs.map((input) => parseField(input)).join(', ')})`
       : ''
   }: ${fn.returnType.name}!`;
@@ -28,7 +28,7 @@ const getTypes = (fieldTypes: FieldType[]): string => {
     if (!field.fields || field.fields.length === 0)
       return types.push(type + '\n');
 
-    type += ' {\n';
+    type += ' {';
 
     field.fields.forEach((field) => {
       type += `\n  ${parseField(field)}`;
