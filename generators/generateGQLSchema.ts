@@ -24,7 +24,14 @@ const getTypes = (fieldTypes: FieldType[]): string => {
   fieldTypes.forEach((field) => {
     let type = ``;
     if (field.isInput) type += `input ${field.name}`;
-    else type += `type ${field.name}`;
+    else if (field.isEnum) {
+      if (!field.fields || field.fields.length === 0) return;
+      type += `enum ${field.name} {`;
+      field.fields.forEach((field) => {
+        type += `\n\t${field.name}`;
+      });
+      return types.push(type + '\n}\n');
+    } else type += `type ${field.name}`;
     if (!field.fields || field.fields.length === 0)
       return types.push(type + '\n');
 

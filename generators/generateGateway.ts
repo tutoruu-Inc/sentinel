@@ -2,7 +2,7 @@ import { generateAPI } from './generateAPI.js';
 import { generateBaseSchema, generateGQLSchema } from './generateGQLSchema.js';
 import { generateResolvers } from './generateResolvers.js';
 import { stitchResolvers } from './stitch.js';
-import { writeService } from './writer.js';
+import { writeService, writeUtils } from './writer.js';
 import { generateLauncher } from './generateLauncher.js';
 import { Service, Object, schema } from './fetchSchema.js';
 
@@ -26,11 +26,16 @@ schema.data.services.forEach((service: Service) => {
   typeDefs.push(schemas.join('\n'));
 });
 
-const types = await generateBaseSchema(schema.data.fieldTypes);
+const fieldTypes = schema.data.fieldType
+  ? [...schema.data.fieldTypes, schema.data.fieldType]
+  : schema.data.fieldTypes;
+const types = await generateBaseSchema(fieldTypes);
 typeDefs.unshift('\n' + types);
 
 console.log(`\n\t✓ Base types Generated\n`);
 await generateLauncher(schema.data.services, typeDefs);
+
+await writeUtils();
 
 console.log(`\t✓ App launcher\n`);
 console.log(`\t✓ Server file\n`);

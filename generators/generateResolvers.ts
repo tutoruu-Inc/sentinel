@@ -1,10 +1,15 @@
 import { Object, Resolver, Service } from './fetchSchema.js';
 
 const functionBodyGen = (resolver: Resolver, service: Service): string => {
-  if (resolver.logic)
+  if (!resolver.request && resolver.logic)
     return `{\n\t\t\t${resolver.logic.split('\n').join('\n\t\t\t')}\n\t\t},\n`;
   if (!resolver.request) return '{}\n';
-  const request = `await this.${resolver.request.method}('${resolver.request.endpoint}')`;
+
+  const request = `${
+    resolver.request.queryable ? 'queryable(async () => ' : ''
+  }await this.${resolver.request.method}('${resolver.request.endpoint}')${
+    resolver.request.queryable ? ', args.input)' : ''
+  }`;
   return `{\n\t\treturn ${
     resolver.request.dataKey
       ? `(${request}).${resolver.request.dataKey}`

@@ -5,7 +5,8 @@ export interface Resolver {
   request?: {
     method: string;
     endpoint: string;
-    dataKey: string;
+    dataKey?: string;
+    queryable: boolean;
   } | null;
   logic?: string | null;
 }
@@ -35,6 +36,7 @@ export interface Field {
 
 export interface FieldType {
   isInput?: boolean;
+  isEnum?: boolean;
   name: string;
   fields?: Field[];
 }
@@ -64,6 +66,7 @@ export interface Schema {
   data: {
     services: Service[];
     fieldTypes: FieldType[];
+    fieldType?: FieldType;
   };
 }
 
@@ -75,20 +78,37 @@ const res = await fetch(
     method: 'POST',
     body: JSON.stringify({
       query: `query Services {
-          fieldTypes(where: {isBaseType: true}) {
-            isInput
-            name
-            fields {
+            fieldType(where: {name: "QueryOptions"}) {
               name
-              required
-              fieldType {
+              isInput
+              fields {
                 name
+                baseType {
+                  name
+                }
+                fieldType {
+                  name
+                }
+                required
               }
-              baseType {
+              isEnum
+              isBaseType
+            }
+            fieldTypes(where: {isBaseType: true}) {
+              isInput
+              isEnum
+              name
+              fields {
                 name
+                required
+                fieldType {
+                  name
+                }
+                baseType {
+                  name
+                }
               }
             }
-          }
             services {
               name
               baseApiUrl
@@ -96,6 +116,7 @@ const res = await fetch(
                 name
                 fieldTypes {
                   isInput
+                  isEnum
                   name
                   fields {
                     name
@@ -152,6 +173,7 @@ const res = await fetch(
                 resolvers {
                   name
                   request {
+                    queryable
                     endpoint
                     dataKey
                     method
@@ -162,6 +184,7 @@ const res = await fetch(
                   name
                   logic
                   request {
+                    queryable
                     method
                     endpoint
                     dataKey
@@ -171,6 +194,7 @@ const res = await fetch(
                   logic
                   name
                   request {
+                    queryable
                     method
                     endpoint
                     dataKey

@@ -3,7 +3,8 @@ import { Service } from './fetchSchema.js';
 export const generateAPI = (service: Service, resolvers: string): string => {
   const _class = `${service.name}API`;
   let api = `import { RESTDataSource } from "@apollo/datasource-rest";\n`;
-  api += `import { Resolvers } from "../../generated/types.js";\n\n`;
+  api += `import { Resolvers } from "../../generated/types.js";\n`;
+  api += `import { queryable } from "../../utils/Query.js";\n\n`;
   api += `class ${_class} extends RESTDataSource {\n`;
   api += `\toverride baseURL = "${service.baseApiUrl}";\n`;
   api += `\t${resolvers}\n`;
