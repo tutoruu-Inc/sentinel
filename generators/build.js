@@ -3,6 +3,8 @@ import util from 'util';
 
 const execute = util.promisify(exec);
 
+console.log('Removing old build...');
+await execute('npm run clear');
 console.log('Building generators...');
 await execute('npx tsc -p ./config/tsconfig.json');
 console.log('Generating gateway...');
