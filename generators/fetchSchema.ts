@@ -70,8 +70,6 @@ export interface Schema {
   };
 }
 
-console.log(`Fetching schema...\n`);
-
 const res = await fetch(
   'https://eu-central-1-shared-euc1-02.cdn.hygraph.com/content/clc4wj38x0cao01uvcm1337ed/master',
   {
@@ -210,4 +208,4 @@ const res = await fetch(
 
 export const schema: Schema = (await res.json()) as Schema;
 
-console.log(`\t✓ Schema fetched\n\n`);
+console.log(`✓ Schema fetched`);
