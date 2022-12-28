@@ -3,6 +3,13 @@ import { parseField } from './generateGQLSchema.js';
 import fs from 'fs/promises';
 
 import { schema } from './fetchSchema.js';
+const returnType = (fn: Mutation | Query): string => {
+  const { returnType } = fn;
+  let name: string = returnType.name;
+  if (name.includes('[')) name = name.slice(1, name.length - 1) + '[]';
+  name = name.replace('!', '');
+  return name;
+};
 const functions = (fns: Query[] | Mutation[]): string => {
   return fns
     .map((query) => {
@@ -22,7 +29,9 @@ const functions = (fns: Query[] | Mutation[]): string => {
                 .join(', ')}`
             : ''
         }) => {\n` +
-        `return await fetchGQL(\`query Query${
+        `return (await fetchGQL<{ ${query.name}: Types.${returnType(
+          query
+        )} }>(\`query Query${
           inputs
             ? `(${query.inputs
                 .map((input) => '$' + parseField(input))
@@ -37,7 +46,7 @@ const functions = (fns: Query[] | Mutation[]): string => {
             \${query}
         }
     }\`${inputs ? `, { ${query.inputs.map((i) => i.name).join(', ')} }` : ''}` +
-        `)\n},\n`
+        `)).${query.name}\n},\n`
       );
     })
     .join('');
@@ -75,11 +84,11 @@ export const client = async (services: Service[] = schema.data.services) => {
     .map((s) => `export * as ${s.slug} from "./${s.slug}";\n`)
     .join('')}
   export const api_url = "https://sentinel-xtwfa.ondigitalocean.app/";
-  export const fetchGQL = async (
+  export async function fetchGQL<T>(
     query: string,
     variables: object | null = null,
     headers: object = {}
-  ) => {
+  ): Promise<T> {
     const res = await fetch(api_url, {
       method: "POST",
       headers: {
