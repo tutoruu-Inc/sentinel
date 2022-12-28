@@ -7,14 +7,12 @@ const functionBodyGen = (resolver: Resolver, service: Service): string => {
 
   const request = `${
     resolver.request.queryable ? 'queryable(async () => ' : ''
-  }await this.${resolver.request.method}('${resolver.request.endpoint}')${
-    resolver.request.queryable ? ', args.input)' : ''
-  }`;
-  return `{\n\t\treturn ${
-    resolver.request.dataKey
-      ? `(${request}).${resolver.request.dataKey}`
-      : request
-  } \n\t},\n`;
+  }${resolver.request.dataKey ? '(' : ''}await this.${
+    resolver.request.method
+  }('${resolver.request.endpoint}')${
+    resolver.request.dataKey ? `).${resolver.request.dataKey}` : ''
+  }${resolver.request.queryable ? ', args.input)' : ''}`;
+  return `{\n\t\treturn ${request} \n\t},\n`;
 };
 
 const resolverGen = (
