@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import { Service } from './fetchSchema';
 export const writeService = async (
   name: string,
   schema: string,
@@ -43,15 +44,34 @@ export const writeSchema = async (schema: string) => {
     await fs.writeFile('./services/schema.graphql', schema);
   }
 };
-export const writeServer = async () => {
+export const writeServer = async (services: Service[]) => {
+  const protectedServices = services.filter((service) => service.protected);
   await fs.writeFile(
     './server.ts',
     `import { ApolloServer, BaseContext } from "@apollo/server";\n` +
       `import { startStandaloneServer } from "@apollo/server/standalone";\n\n` +
       `import { resolvers, typeDefs } from "./services/launchpad.js";\n\n` +
+      protectedServices
+        .map(
+          (service) =>
+            `import { ${service.name.toLocaleUpperCase()} } from "./services/${
+              service.slug
+            }/service.js";\n`
+        )
+        .join('') +
       `const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });\n\n` +
       `const port = (process.env.PORT ?? 8000) as number;\n` +
-      `await startStandaloneServer(server, { listen: { port } });\n\n` +
+      `await startStandaloneServer(server, {
+        context: async ({ req, res }) => {\n` +
+      protectedServices
+        .map(
+          (service) =>
+            `\t\t${service.name.toLocaleUpperCase()}.token = req.headers.authorization ?? ${service.name.toLocaleUpperCase()}.token ?? "";\n`
+        )
+        .join('') +
+      `\t\treturn {};\n` +
+      '},\n' +
+      'listen: { port },\n});\n\n' +
       `console.log("Sentinel up and running...")\n`
   );
 };

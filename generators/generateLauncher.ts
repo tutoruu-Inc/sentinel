@@ -25,5 +25,5 @@ export const generateLauncher = async (
   const script =
     imports + '\n' + resolvers + queries + mutations + '}\n\n' + exports;
   await writeLaunchpad(script);
-  await writeServer();
+  await writeServer(services);
 };

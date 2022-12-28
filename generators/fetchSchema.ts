@@ -60,6 +60,7 @@ export interface Service {
   slug: string;
   baseApiUrl: string;
   objects: Object[];
+  protected?: boolean;
 }
 
 export interface Schema {
@@ -110,6 +111,7 @@ const res = await fetch(
             services {
               name
               baseApiUrl
+              protected
               objects {
                 name
                 fieldTypes {
