@@ -209,6 +209,5 @@ const res = await fetch(
 );
 
 export const schema: Schema = (await res.json()) as Schema;
-console.log(schema);
 
 console.log(`✓ Schema fetched`);

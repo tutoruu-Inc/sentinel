@@ -72,17 +72,16 @@ export const client = async (services: Service[] = schema.data.services) => {
   }
 
   const index = `${services
-    .map((s) => `export * as ${s.slug} from "./${s.slug}";`)
-    .join('\n')}
-    import axios from "axios";
-
+    .map((s) => `export * as ${s.slug} from "./${s.slug}";\n`)
+    .join('')}
   export const api_url = "https://sentinel-xtwfa.ondigitalocean.app/";
   export const fetchGQL = async (
     query: string,
     variables: object | null = null,
     headers: object = {}
   ) => {
-    const res = await axios.post(api_url, {
+    const res = await fetch(api_url, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...headers,
@@ -90,7 +89,7 @@ export const client = async (services: Service[] = schema.data.services) => {
       body: JSON.stringify({ query, variables }),
     });
   
-    const { data, errors } = res.data;
+    const { data, errors } = await res.json();
   
     if (Array.isArray(errors)) errors.forEach((error) => console.log(error));
   
