@@ -98,16 +98,24 @@ export const client = async (services: Service[] = schema.data.services) => {
   `;
   await fs.writeFile('./@tutoruu-inc/sentinel/src/index.ts', index);
   for (const service of services) await writeServiceForClient(service);
-  await copyRecursive('./generated', './@tutoruu-inc/sentinel/src/generated');
+  try {
+    await fs.rm('./@tutoruu-inc/sentinel/src/generated', { recursive: true });
+  } catch (err) {}
+  try {
+    await fs.mkdir('./@tutoruu-inc/sentinel/src/generated', {
+      recursive: true
+    });
+  } catch (err) {}
+  try {
+    const types = await fs.readFile('./generated/types.ts', 'utf-8');
+    await fs.writeFile('./@tutoruu-inc/sentinel/src/generated/types.ts', types);
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 import path from 'path';
 
-/**
- * Look ma, it's cp -R.
- * @param {string} src  The path to the thing to copy.
- * @param {string} dest The path to the new copy.
- */
 const copyRecursive = async (src: string, dest: string) => {
   var stats = await fs.stat(src);
   var isDirectory = stats.isDirectory();
@@ -121,7 +129,6 @@ const copyRecursive = async (src: string, dest: string) => {
       );
     });
   } else {
-    fs.copyFile(src, dest);
   }
 };
 
