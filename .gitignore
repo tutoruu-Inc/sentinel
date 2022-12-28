@@ -6,4 +6,5 @@ generated
 services
 server.ts
 utils
-@tutoruu-inc/sentinel/src
+bridge
+.DS_Store

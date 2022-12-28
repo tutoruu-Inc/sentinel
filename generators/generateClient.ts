@@ -69,13 +69,13 @@ const writeServiceForClient = async (service: Service) => {
     '\n}\n';
 
   await fs.writeFile(
-    './@tutoruu-inc/sentinel/src/' + slug + '.ts',
+    './bridge/src/' + slug + '.ts',
     imports.join('\n') + '\n\n' + queryString + MutationString
   );
 };
 export const client = async (services: Service[] = schema.data.services) => {
   try {
-    await fs.mkdir('./@tutoruu-inc/sentinel/src/', { recursive: true });
+    await fs.mkdir('./bridge/src/', { recursive: true });
   } catch (err) {
     console.error(err);
   }
@@ -105,19 +105,19 @@ export const client = async (services: Service[] = schema.data.services) => {
     return data;
   };
   `;
-  await fs.writeFile('./@tutoruu-inc/sentinel/src/index.ts', index);
+  await fs.writeFile('./bridge/src/index.ts', index);
   for (const service of services) await writeServiceForClient(service);
   try {
-    await fs.rm('./@tutoruu-inc/sentinel/src/generated', { recursive: true });
+    await fs.rm('./bridge/src/generated', { recursive: true });
   } catch (err) {}
   try {
-    await fs.mkdir('./@tutoruu-inc/sentinel/src/generated', {
+    await fs.mkdir('./bridge/src/generated', {
       recursive: true
     });
   } catch (err) {}
   try {
     const types = await fs.readFile('./generated/types.ts', 'utf-8');
-    await fs.writeFile('./@tutoruu-inc/sentinel/src/generated/types.ts', types);
+    await fs.writeFile('./bridge/src/generated/types.ts', types);
   } catch (e) {
     console.error(e);
   }

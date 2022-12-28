@@ -8,7 +8,7 @@
 		"codegen": "graphql-codegen --config ./config/codegen.yml",
 		"clear": "node ./generators/clean.js",
 		"cleanup": "prettier --config ./config/.prettierrc './**/*.ts' --write",
-		"publish": "npm run build && cd ./@tutoruu-inc/sentinel && npm publish"
+		"publish": "npm run build && cd ./bridge && npm publish"
 	},
 	"main": "index.js",
 	"dependencies": {
