@@ -13,4 +13,5 @@ await tryExecuting("rm -r dist");
 await tryExecuting("rm -r generated");
 await tryExecuting("rm -r services");
 await tryExecuting("rm -r utils");
+await tryExecuting("rm -r @tutoruu-inc/sentinel/src");
 await tryExecuting("rm server.ts");

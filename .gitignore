@@ -6,3 +6,4 @@ generated
 services
 server.ts
 utils
+@tutoruu-inc/sentinel/src

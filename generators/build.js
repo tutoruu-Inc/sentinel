@@ -18,6 +18,10 @@ generator.stdout.on("data", (data) => {
 generator.stdout.on("close", async () => {
   console.log("Generating types...");
   await execute("npm run codegen");
+  console.log("Generating client code...");
+  await execute("node dist/generators/generateClient.js");
+  await execute("cd ./@tutoruu-inc/sentinel && npm install && npm run build");
+  await execute("cd ..");
   console.log("Cleaning up...");
   await execute("npm run cleanup");
   console.log("Final build...");

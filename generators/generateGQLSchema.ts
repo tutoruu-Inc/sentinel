@@ -7,19 +7,19 @@ import type {
 } from './fetchSchema.js';
 import { writeSchema } from './writer.js';
 
-const parseField = (field: Field): string =>
+export const parseField = (field: Field): string =>
   `${field.name}: ${field.fieldType?.name ?? field.baseType?.name}${
     field.required ? '!' : ''
   }`;
 
-const parseFunction = (fn: Mutation | Query): string =>
+export const parseFunction = (fn: Mutation | Query): string =>
   `${fn.name}${
     fn.inputs && fn.inputs.length > 0
       ? `(${fn.inputs.map((input) => parseField(input)).join(', ')})`
       : ''
   }: ${fn.returnType.name}!`;
 
-const getTypes = (fieldTypes: FieldType[]): string => {
+export const getTypes = (fieldTypes: FieldType[]): string => {
   const types: string[] = [];
   fieldTypes.forEach((field) => {
     let type = ``;

@@ -5,9 +5,10 @@ import { stitchResolvers } from './stitch.js';
 import { writeService, writeUtils } from './writer.js';
 import { generateLauncher } from './generateLauncher.js';
 import { Service, Object, schema } from './fetchSchema.js';
+import { client } from './generateClient.js';
 
 const typeDefs: string[] = [];
-schema.data.services.forEach((service: Service) => {
+schema.data.services.forEach(async (service: Service) => {
   const resolvers: { functions: string; name: string }[] = [];
   const schemas: string[] = [];
   service.objects.forEach((object: Object) => {

@@ -25,6 +25,12 @@ export const writeService = async (
   return true;
 };
 
+export const writeFile = async (path: string, contents: string) => {
+  try {
+    return await fs.writeFile(path, contents);
+  } catch (err) {}
+};
+
 export const writeLaunchpad = async (script: string) => {
   await fs.writeFile('./services/launchpad.ts', script);
 };
