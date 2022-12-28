@@ -12,6 +12,7 @@ const returnType = (fn: Mutation | Query): string => {
 };
 const functions = (
   fns: Query[] | Mutation[],
+  type: 'query' | 'mutation' = 'query',
   authenticated?: boolean
 ): string => {
   return fns
@@ -34,7 +35,12 @@ const functions = (
         }${authenticated ? ', token?: string' : ''}) => {\n` +
         `return (await fetchGQL<{ ${query.name}: Types.${returnType(
           query
-        )} }>(\`query Query${
+        )} }>(/* GraphQL */\`${type} ${
+          query.name.charAt(0).toUpperCase() +
+          query.name.slice(1) +
+          type.charAt(0).toUpperCase() +
+          type.slice(1)
+        }${
           inputs
             ? `(${query.inputs
                 .map((input) => '$' + parseField(input))
@@ -69,6 +75,7 @@ const writeServiceForClient = async (service: Service) => {
     'export const Queries = {\n' +
     functions(
       objects.map((object) => object.queries).flat(),
+      'query',
       service.protected
     ) +
     '\n}\n';
@@ -76,6 +83,7 @@ const writeServiceForClient = async (service: Service) => {
     'export const Mutations = {\n' +
     functions(
       objects.map((object) => object.mutations).flat(),
+      'mutation',
       service.protected
     ) +
     '\n}\n';
