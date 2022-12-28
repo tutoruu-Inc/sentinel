@@ -13,5 +13,5 @@ await tryExecuting("rm -r dist");
 await tryExecuting("rm -r generated");
 await tryExecuting("rm -r services");
 await tryExecuting("rm -r utils");
-await tryExecuting("rm -r bridge/src");
+await tryExecuting("rm -r ../bridge/src");
 await tryExecuting("rm server.ts");

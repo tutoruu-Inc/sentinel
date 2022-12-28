@@ -6,5 +6,4 @@ generated
 services
 server.ts
 utils
-bridge
 .DS_Store
