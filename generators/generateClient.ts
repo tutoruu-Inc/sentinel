@@ -10,7 +10,10 @@ const returnType = (fn: Mutation | Query): string => {
   name = name.replace('!', '');
   return name;
 };
-const functions = (fns: Query[] | Mutation[]): string => {
+const functions = (
+  fns: Query[] | Mutation[],
+  authenticated?: boolean
+): string => {
   return fns
     .map((query) => {
       const inputs = query.inputs && query.inputs.length > 0 ? true : false;
@@ -28,7 +31,7 @@ const functions = (fns: Query[] | Mutation[]): string => {
                 )
                 .join(', ')}`
             : ''
-        }) => {\n` +
+        }${authenticated ? ', token?: string' : ''}) => {\n` +
         `return (await fetchGQL<{ ${query.name}: Types.${returnType(
           query
         )} }>(\`query Query${
@@ -45,7 +48,10 @@ const functions = (fns: Query[] | Mutation[]): string => {
         } {
             \${query}
         }
-    }\`${inputs ? `, { ${query.inputs.map((i) => i.name).join(', ')} }` : ''}` +
+    }\`, ${
+      inputs ? `{ ${query.inputs.map((i) => i.name).join(', ')} }` : '{}'
+    }` +
+        `${authenticated ? ', { authorization: "Bearer " + token }' : ''}` +
         `)).${query.name}\n},\n`
       );
     })
@@ -61,11 +67,17 @@ const writeServiceForClient = async (service: Service) => {
 
   const queryString =
     'export const Queries = {\n' +
-    functions(objects.map((object) => object.queries).flat()) +
+    functions(
+      objects.map((object) => object.queries).flat(),
+      service.protected
+    ) +
     '\n}\n';
   const MutationString =
     'export const Mutations = {\n' +
-    functions(objects.map((object) => object.mutations).flat()) +
+    functions(
+      objects.map((object) => object.mutations).flat(),
+      service.protected
+    ) +
     '\n}\n';
 
   await fs.writeFile(
