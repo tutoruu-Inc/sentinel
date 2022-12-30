@@ -3,10 +3,13 @@ import { parseField } from './generateGQLSchema.js';
 import fs from 'fs/promises';
 
 import { schema } from './fetchSchema.js';
-const returnType = (fn: Mutation | Query): string => {
+const returnType = (fn: Mutation | Query, includeArr = true): string => {
   const { returnType } = fn;
   let name: string = returnType.name;
-  if (name.includes('[')) name = name.slice(1, name.length - 1) + '[]';
+  if (name.includes('[')) {
+    name = name.slice(1, name.length - 1);
+    includeArr ? (name += '[]') : null;
+  }
   name = name.replace('!', '');
   return name;
 };
@@ -19,7 +22,7 @@ const functions = (
     .map((query) => {
       const inputs = query.inputs && query.inputs.length > 0 ? true : false;
       return (
-        `${query.name}: async (query: string${
+        `${query.name}: async <Q extends string>(query: Q${
           inputs
             ? `, ${query.inputs
                 .map(
@@ -33,9 +36,24 @@ const functions = (
                 .join(', ')}`
             : ''
         }${authenticated ? ', token?: string' : ''}) => {\n` +
-        `return (await fetchGQL<{ ${query.name}: Types.${returnType(
-          query
-        )} }>(/* GraphQL */\`${type} ${
+        `type props = keyof {
+          [Key in (String.Split<Q, ' '> extends (keyof Types.${returnType(
+            query,
+            false
+          )})[]
+            ? String.Split<Q, ' '>
+            : never)[number]]: Types.${returnType(query, false)}[Key];
+        }\n` +
+        `return (await fetchGQL<{ ${query.name}: Pick<
+         Types.${returnType(
+           query,
+           false
+         )}, props extends never ? keyof Types.${returnType(
+          query,
+          false
+        )} : props>${
+          query.returnType.name.includes('[') ? '[]' : ''
+        } }>(/* GraphQL */\`${type} ${
           query.name.charAt(0).toUpperCase() +
           query.name.slice(1) +
           type.charAt(0).toUpperCase() +
@@ -70,6 +88,7 @@ const writeServiceForClient = async (service: Service) => {
   const imports: string[] = [];
   imports.push(`import { fetchGQL } from "."`);
   imports.push(`import * as Types from "./generated/types.js"`);
+  imports.push(`import { String } from 'ts-toolbelt';`);
 
   const queryString =
     'export const Queries = {\n' +
