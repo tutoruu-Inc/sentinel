@@ -13,6 +13,7 @@ const returnType = (fn: Mutation | Query, includeArr = true): string => {
   name = name.replace('!', '');
   return name;
 };
+
 const functions = (
   fns: Query[] | Mutation[],
   type: 'query' | 'mutation' = 'query',
@@ -36,22 +37,8 @@ const functions = (
                 .join(', ')}`
             : ''
         }${authenticated ? ', token?: string' : ''}) => {\n` +
-        `type props = keyof {
-          [Key in (String.Split<Q, ' '> extends (keyof Types.${returnType(
-            query,
-            false
-          )})[]
-            ? String.Split<Q, ' '>
-            : never)[number]]: Types.${returnType(query, false)}[Key];
-        }\n` +
-        `return (await fetchGQL<{ ${query.name}: Pick<
-         Types.${returnType(
-           query,
-           false
-         )}, props extends never ? keyof Types.${returnType(
-          query,
-          false
-        )} : props>${
+        `return (await fetchGQL<{ ${query.name}: Query<
+         Types.${returnType(query, false)}, Q>${
           query.returnType.name.includes('[') ? '[]' : ''
         } }>(/* GraphQL */\`${type} ${
           query.name.charAt(0).toUpperCase() +
@@ -82,36 +69,6 @@ const functions = (
     .join('');
 };
 
-const writeServiceForClient = async (service: Service) => {
-  const { slug, objects } = service;
-
-  const imports: string[] = [];
-  imports.push(`import { fetchGQL } from "."`);
-  imports.push(`import * as Types from "./generated/types.js"`);
-  imports.push(`import { String } from 'ts-toolbelt';`);
-
-  const queryString =
-    'export const Queries = {\n' +
-    functions(
-      objects.map((object) => object.queries).flat(),
-      'query',
-      service.protected
-    ) +
-    '\n}\n';
-  const MutationString =
-    'export const Mutations = {\n' +
-    functions(
-      objects.map((object) => object.mutations).flat(),
-      'mutation',
-      service.protected
-    ) +
-    '\n}\n';
-
-  await fs.writeFile(
-    '../bridge/src/' + slug + '.ts',
-    imports.join('\n') + '\n\n' + queryString + MutationString
-  );
-};
 export const client = async (services: Service[] = schema.data.services) => {
   try {
     await fs.mkdir('../bridge/src/', { recursive: true });
@@ -119,10 +76,11 @@ export const client = async (services: Service[] = schema.data.services) => {
     console.error(err);
   }
 
-  const index = `${services
-    .map((s) => `export * as ${s.slug} from "./${s.slug}";\n`)
-    .join('')}
-  export const api_url = "https://sentinel-xtwfa.ondigitalocean.app/";
+  const index = `
+  import * as Types from "./generated/types.js"
+  import { String, List } from 'ts-toolbelt';
+
+  export const api_url = "https://sentinel.tutoruu.com/";
   export async function fetchGQL<T>(
     query: string,
     variables: object | null = null,
@@ -143,9 +101,37 @@ export const client = async (services: Service[] = schema.data.services) => {
   
     return data;
   };
+
+  type Query<T, Q extends string> = Pick<T, List.UnionOf<String.Split<Q, ' '>> extends keyof T ? List.UnionOf<String.Split<Q, ' '>> : keyof T>;
+
+  export const Queries = {
+    ${services
+      .map((s) =>
+        functions(
+          s.objects.map((object) => object.queries).flat(),
+          'query',
+          s.protected
+        )
+      )
+      .filter((q) => !!q)
+      .join('')}
+  };
+
+  export const Mutations = {
+    ${services
+      .map((s) =>
+        functions(
+          s.objects.map((object) => object.queries).flat(),
+          'mutation',
+          s.protected
+        )
+      )
+      .filter((m) => !!m)
+      .join('')}
+  };
   `;
+
   await fs.writeFile('../bridge/src/index.ts', index);
-  for (const service of services) await writeServiceForClient(service);
   try {
     await fs.rm('../bridge/src/generated', { recursive: true });
   } catch (err) {}

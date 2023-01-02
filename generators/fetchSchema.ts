@@ -168,6 +168,7 @@ const res = await fetch(
                     fieldType {
                       name
                     }
+                    required
                   }
                 }
                 resolvers {
