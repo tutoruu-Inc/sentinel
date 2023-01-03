@@ -15,6 +15,7 @@ export interface Query {
   name: string;
   returnType: {
     name: string;
+    __typename: string;
   };
   inputs: Field[];
 }
@@ -23,6 +24,7 @@ export interface Mutation {
   name: string;
   returnType: {
     name: string;
+    __typename: string;
   };
   inputs: Field[];
 }
@@ -132,6 +134,7 @@ const res = await fetch(
                 mutations {
                   name
                   returnType {
+                    __typename
                     ... on BaseType {
                       name
                     }
@@ -153,6 +156,7 @@ const res = await fetch(
                 queries {
                   name
                   returnType {
+                    __typename
                     ... on BaseType {
                       name
                     }

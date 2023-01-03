@@ -5,13 +5,18 @@ import fs from 'fs/promises';
 import { schema } from './fetchSchema.js';
 const returnType = (fn: Mutation | Query, includeArr = true): string => {
   const { returnType } = fn;
-  let name: string = returnType.name;
-  if (name.includes('[')) {
-    name = name.slice(1, name.length - 1);
-    includeArr ? (name += '[]') : null;
+  const { name, __typename } = returnType;
+  let type: string = name;
+
+  if (type.includes('[')) {
+    type = type.slice(1, type.length - 1);
+    if (__typename === 'BaseType') type = `Scalars['${type}']`;
+    else if (includeArr) return (type += '[]');
+  } else if (__typename === 'BaseType') {
+    type = `Scalars['${type}']`;
+    return type.replace('!', '');
   }
-  name = name.replace('!', '');
-  return name;
+  return type.replace('!', '');
 };
 
 const functions = (
@@ -121,7 +126,7 @@ export const client = async (services: Service[] = schema.data.services) => {
     ${services
       .map((s) =>
         functions(
-          s.objects.map((object) => object.queries).flat(),
+          s.objects.map((object) => object.mutations).flat(),
           'mutation',
           s.protected
         )
