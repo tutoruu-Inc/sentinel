@@ -89,6 +89,19 @@ const res = await fetch(
                 }
                 fieldType {
                   name
+                  isInput
+                  fields {
+                    name
+                    baseType {
+                      name
+                    }
+                    fieldType {
+                      name
+                    }
+                    required
+                  }
+                  isEnum
+                  isBaseType
                 }
                 required
               }

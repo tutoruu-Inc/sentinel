@@ -4,7 +4,7 @@ import { generateResolvers } from './generateResolvers.js';
 import { stitchResolvers } from './stitch.js';
 import { writeService, writeUtils } from './writer.js';
 import { generateLauncher } from './generateLauncher.js';
-import { Service, Object, schema } from './fetchSchema.js';
+import { Service, Object, schema, FieldType } from './fetchSchema.js';
 import { client } from './generateClient.js';
 
 const typeDefs: string[] = [];
@@ -24,10 +24,15 @@ schema.data.services.forEach(async (service: Service) => {
   typeDefs.push(schemas.join('\n'));
   console.log('✓ Created Service: ' + service.name);
 });
-
-const fieldTypes = schema.data.fieldType
-  ? [...schema.data.fieldTypes, schema.data.fieldType]
-  : schema.data.fieldTypes;
+const additionalFieldTypes = (schema.data.fieldType?.fields ?? [])
+  .map((f) => f.fieldType)
+  .filter((f) => !!f) as FieldType[];
+const fieldTypes =
+  typeof schema.data.fieldType !== 'undefined'
+    ? schema.data.fieldTypes
+        .concat([schema.data.fieldType])
+        .concat(additionalFieldTypes)
+    : schema.data.fieldTypes;
 const types = await generateBaseSchema(fieldTypes);
 
 typeDefs.unshift('\n' + types);
