@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { Service } from './fetchSchema';
+import { Service } from './fetchSchema.js';
 export const writeService = async (
   name: string,
   schema: string,

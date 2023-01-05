@@ -1,4 +1,4 @@
-import { Object, Resolver, Service } from './fetchSchema.js';
+import { Object, Resolver, ScalarType, Service } from './fetchSchema.js';
 
 const functionBodyGen = (resolver: Resolver, service: Service): string => {
   if (!resolver.request && resolver.logic)

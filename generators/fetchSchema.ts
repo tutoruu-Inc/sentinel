@@ -34,6 +34,7 @@ export interface Field {
   required?: boolean;
   fieldType?: FieldType | null;
   baseType?: BaseType | null;
+  scalarType?: ScalarType | null;
 }
 
 export interface FieldType {
@@ -45,6 +46,12 @@ export interface FieldType {
 
 export interface BaseType {
   name: string;
+}
+
+export interface ScalarType {
+  name: string;
+  parseLogic: string;
+  serializeLogic: string;
 }
 
 export interface Object {
@@ -70,6 +77,7 @@ export interface Schema {
     services: Service[];
     fieldTypes: FieldType[];
     fieldType?: FieldType;
+    scalarTypes: ScalarType[];
   };
 }
 
@@ -79,6 +87,11 @@ const res = await fetch(
     method: 'POST',
     body: JSON.stringify({
       query: `query Services {
+            scalarTypes {
+              name
+              parseLogic
+              serializeLogic
+            }
             fieldType(where: {name: "QueryOptions"}) {
               name
               isInput
@@ -121,6 +134,9 @@ const res = await fetch(
                 baseType {
                   name
                 }
+                scalarType {
+                  name
+                }
               }
             }
             services {
@@ -140,6 +156,9 @@ const res = await fetch(
                       name
                     }
                     baseType {
+                      name
+                    }
+                    scalarType {
                       name
                     }
                   }
@@ -163,6 +182,9 @@ const res = await fetch(
                     fieldType {
                       name
                     }
+                    scalarType {
+                      name
+                    }
                     required
                   }
                 }
@@ -183,6 +205,9 @@ const res = await fetch(
                       name
                     }
                     fieldType {
+                      name
+                    }
+                    scalarType {
                       name
                     }
                     required

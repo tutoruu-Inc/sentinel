@@ -1,7 +1,7 @@
 import { Service } from './fetchSchema.js';
 
 export const generateAPI = (service: Service, resolvers: string): string => {
-  const _class = `${service.name}API`;
+  const _class = `${service.name.replace(' ', '')}API`;
   let api = `import { RESTDataSource${
     service.protected ? ', WillSendRequestOptions' : ''
   } } from "@apollo/datasource-rest";\n`;
@@ -17,6 +17,8 @@ export const generateAPI = (service: Service, resolvers: string): string => {
   }
   api += `\t${resolvers}\n`;
   api += '}\n\n';
-  api += `export const ${service.name.toLocaleUpperCase()} = new ${_class}();\n`;
+  api += `export const ${service.name
+    .replace(' ', '')
+    .toLocaleUpperCase()} = new ${_class}();\n`;
   return api;
 };

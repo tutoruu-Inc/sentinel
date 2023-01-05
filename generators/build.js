@@ -15,6 +15,10 @@ generator.stdout.on("data", (data) => {
   console.log(`${data}`);
 });
 
+generator.stderr.on("data", (err) => {
+  console.log(`${err}`);
+});
+
 generator.stdout.on("close", async () => {
   console.log("Generating types...");
   await execute("npm run codegen");

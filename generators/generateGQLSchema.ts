@@ -3,14 +3,16 @@ import type {
   Mutation,
   Query,
   FieldType,
-  Object
+  Object,
+  ScalarType
 } from './fetchSchema.js';
+import { getScalars } from './generateScalars.js';
 import { writeSchema } from './writer.js';
 
 export const parseField = (field: Field): string =>
-  `${field.name}: ${field.fieldType?.name ?? field.baseType?.name}${
-    field.required ? '!' : ''
-  }`;
+  `${field.name}: ${
+    field.scalarType?.name ?? field.fieldType?.name ?? field.baseType?.name
+  }${field.required ? '!' : ''}`;
 
 export const parseFunction = (fn: Mutation | Query): string =>
   `${fn.name}${
@@ -72,8 +74,11 @@ const getFunctions = (object: Object): string => {
 export const generateGQLSchema = (object: Object): string =>
   getFunctions(object) + getTypes(object.fieldTypes);
 
-export const generateBaseSchema = async (types: FieldType[]) => {
-  const baseTypes = getTypes(types);
+export const generateBaseSchema = async (
+  types: FieldType[],
+  scalars: ScalarType[]
+) => {
+  const baseTypes = getTypes(types) + getScalars(scalars);
   await writeSchema(baseTypes);
   return baseTypes;
 };
