@@ -40,6 +40,7 @@ export interface Field {
 export interface FieldType {
   isInput?: boolean;
   isEnum?: boolean;
+  isUnion?: boolean;
   name: string;
   fields?: Field[];
 }
