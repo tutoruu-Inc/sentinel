@@ -125,6 +125,7 @@ const res = await fetch(
             fieldTypes(where: {isBaseType: true}) {
               isInput
               isEnum
+              isUnion
               name
               fields {
                 name
@@ -149,6 +150,7 @@ const res = await fetch(
                 fieldTypes {
                   isInput
                   isEnum
+                  isUnion
                   name
                   fields {
                     name
