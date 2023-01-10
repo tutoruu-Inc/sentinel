@@ -118,6 +118,28 @@ export const client = async (services: Service[] = schema.data.services) => {
 
   type Query<T, Q extends string> = Pick<T, List.UnionOf<String.Split<Q, ' '>> extends keyof T ? List.UnionOf<String.Split<Q, ' '>> : keyof T>;
 
+  export async function Query<RT extends object>(
+    name: string,
+    query: string
+  ) {
+    return await fetchGQL<RT>(
+      /* GraphQL */ \`query \${name} {
+              \${query}
+      }\`
+    );
+  }
+  
+  export async function Mutation<RT extends object>(
+    name: string,
+    mutation: string
+  ) {
+    return await fetchGQL<RT>(
+      /* GraphQL */ \`mutation \${name} {
+              \${mutation}
+      }\`
+    );
+  }
+
     ${services
       .map((s) =>
         functions(
@@ -127,7 +149,7 @@ export const client = async (services: Service[] = schema.data.services) => {
         )
       )
       .filter((q) => !!q)
-      .join('')}
+      .join('\n')}
 
     ${services
       .map((s) =>
@@ -138,7 +160,7 @@ export const client = async (services: Service[] = schema.data.services) => {
         )
       )
       .filter((m) => !!m)
-      .join('')}
+      .join('\n')}
   `;
 
   await fs.writeFile('../bridge/src/index.ts', index);
