@@ -1,50 +1,59 @@
-import { Mutation, Service, Query } from "./fetchSchema.js";
-import { parseField } from "./generateGQLSchema.js";
-import fs from "fs/promises";
+import { Mutation, Service, Query } from './fetchSchema.js';
+import { parseField } from './generateGQLSchema.js';
+import fs from 'fs/promises';
 
-import { schema } from "./fetchSchema.js";
+import { schema } from './fetchSchema.js';
 const returnType = (fn: Mutation | Query, includeArr = true): string => {
   const { returnType } = fn;
   const { name, __typename } = returnType;
   let type: string = name;
 
-  if (type.includes("[")) {
+  if (type.includes('[')) {
     type = type.slice(1, type.length - 1);
-    if (__typename === "BaseType") type = `Scalars['${type}']`;
-    else if (includeArr) return (type += "[]");
-  } else if (__typename === "BaseType") {
+    if (__typename === 'BaseType') type = `Scalars['${type}']`;
+    else if (includeArr) return (type += '[]');
+  } else if (__typename === 'BaseType') {
     type = `Scalars['${type}']`;
-    return type.replace("!", "");
+    return type.replace('!', '');
   }
-  return type.replace("!", "");
+  return type.replace('!', '');
+};
+
+const functionName = (name: string, type: string) => {
+  if (type === 'mutation') return name;
+
+  return 'get' + name.charAt(0).toUpperCase() + name.slice(1);
 };
 
 const functions = <FN extends Query | Mutation>(
   fns: FN[],
-  type: "query" | "mutation" = "query",
+  type: 'query' | 'mutation' = 'query',
   authenticated?: boolean
 ): string => {
   return fns
     .map((query) => {
       const inputs = query.inputs && query.inputs.length > 0 ? true : false;
       return (
-        `export async function ${query.name}<Q extends string>(query: Q${
+        `export async function ${functionName(
+          query.name,
+          type
+        )}<Q extends string>(query: Q${
           inputs
             ? `, ${query.inputs
                 .map(
                   (i) =>
-                    `${i.name}${i.required ? "" : "?"}: Types.${
+                    `${i.name}${i.required ? '' : '?'}: Types.${
                       i.baseType?.name
                         ? `Scalars['${i.baseType?.name}']`
                         : i.fieldType?.name
                     }`
                 )
-                .join(", ")}`
-            : ""
-        }${authenticated ? ", token?: string" : ""}) {\n` +
+                .join(', ')}`
+            : ''
+        }${authenticated ? ', token?: string' : ''}) {\n` +
         `return (await fetchGQL<{ ${query.name}: Query<
          Types.${returnType(query, false)}, Q>${
-          query.returnType.name.includes("[") ? "[]" : ""
+          query.returnType.name.includes('[') ? '[]' : ''
         } }>(/* GraphQL */\`${type} ${
           query.name.charAt(0).toUpperCase() +
           query.name.slice(1) +
@@ -53,30 +62,30 @@ const functions = <FN extends Query | Mutation>(
         }${
           inputs
             ? `(${query.inputs
-                .map((input) => "$" + parseField(input))
-                .join(", ")})`
-            : ""
+                .map((input) => '$' + parseField(input))
+                .join(', ')})`
+            : ''
         } {
         ${query.name}${
           inputs
-            ? `(${query.inputs.map((i) => `${i.name}: $${i.name}`).join(", ")})`
-            : ""
+            ? `(${query.inputs.map((i) => `${i.name}: $${i.name}`).join(', ')})`
+            : ''
         } {
             \${query}
         }
     }\`, ${
-      inputs ? `{ ${query.inputs.map((i) => i.name).join(", ")} }` : "{}"
+      inputs ? `{ ${query.inputs.map((i) => i.name).join(', ')} }` : '{}'
     }` +
-        `${authenticated ? ', { authorization: "Bearer " + token }' : ""}` +
+        `${authenticated ? ', { authorization: "Bearer " + token }' : ''}` +
         `)).${query.name}\n}\n`
       );
     })
-    .join("");
+    .join('');
 };
 
 export const client = async (services: Service[] = schema.data.services) => {
   try {
-    await fs.mkdir("../bridge/src/", { recursive: true });
+    await fs.mkdir('../bridge/src/', { recursive: true });
   } catch (err) {
     console.error(err);
   }
@@ -113,43 +122,43 @@ export const client = async (services: Service[] = schema.data.services) => {
       .map((s) =>
         functions(
           s.objects.map((object) => object.queries).flat(),
-          "query",
+          'query',
           s.protected
         )
       )
       .filter((q) => !!q)
-      .join("")}
+      .join('')}
 
     ${services
       .map((s) =>
         functions(
           s.objects.map((object) => object.mutations).flat(),
-          "mutation",
+          'mutation',
           s.protected
         )
       )
       .filter((m) => !!m)
-      .join("")}
+      .join('')}
   `;
 
-  await fs.writeFile("../bridge/src/index.ts", index);
+  await fs.writeFile('../bridge/src/index.ts', index);
   try {
-    await fs.rm("../bridge/src/generated", { recursive: true });
+    await fs.rm('../bridge/src/generated', { recursive: true });
   } catch (err) {}
   try {
-    await fs.mkdir("../bridge/src/generated", {
-      recursive: true,
+    await fs.mkdir('../bridge/src/generated', {
+      recursive: true
     });
   } catch (err) {}
   try {
-    const types = await fs.readFile("./generated/types.ts", "utf-8");
-    await fs.writeFile("../bridge/src/generated/types.ts", types);
+    const types = await fs.readFile('./generated/types.ts', 'utf-8');
+    await fs.writeFile('../bridge/src/generated/types.ts', types);
   } catch (e) {
     console.error(e);
   }
 };
 
-import path from "path";
+import path from 'path';
 
 const copyRecursive = async (src: string, dest: string) => {
   var stats = await fs.stat(src);
