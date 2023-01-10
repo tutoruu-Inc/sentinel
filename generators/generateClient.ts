@@ -94,6 +94,8 @@ export const client = async (services: Service[] = schema.data.services) => {
   import * as Types from "./generated/types.js"
   import { String, List } from 'ts-toolbelt';
 
+  export * from './generated/types.js';
+
   export const api_url = "https://sentinel.tutoruu.com/";
   export async function fetchGQL<T>(
     query: string,
