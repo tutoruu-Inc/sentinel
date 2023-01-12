@@ -14,12 +14,18 @@ export const parseField = (field: Field): string =>
     field.scalarType?.name ?? field.fieldType?.name ?? field.baseType?.name
   }${field.required ? '!' : ''}`;
 
-export const parseFunction = (fn: Mutation | Query): string =>
-  `${fn.name}${
+export const parseFunction = (fn: Mutation | Query): string => {
+  if (!fn.returnType) {
+    console.log(fn.name, 'is missing a return type');
+    return '';
+  }
+
+  return `${fn.name}${
     fn.inputs && fn.inputs.length > 0
       ? `(${fn.inputs.map((input) => parseField(input)).join(', ')})`
       : ''
   }: ${fn.returnType.name}!`;
+};
 
 export const getTypes = (fieldTypes: FieldType[]): string => {
   const types: string[] = [`type Query\ntype Mutation\n`];
