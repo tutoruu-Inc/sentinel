@@ -88,7 +88,7 @@ const res = await fetch(
     method: 'POST',
     body: JSON.stringify({
       query: `query Services {
-            scalarTypes {
+            scalarTypes(first: 10000) {
               name
               parseLogic
               serializeLogic
@@ -122,12 +122,12 @@ const res = await fetch(
               isEnum
               isBaseType
             }
-            fieldTypes(where: {isBaseType: true}) {
+            fieldTypes(first: 10000, where: {isBaseType: true}) {
               isInput
               isEnum
               isUnion
               name
-              fields {
+              fields(first: 10000) {
                 name
                 required
                 fieldType {
@@ -141,18 +141,18 @@ const res = await fetch(
                 }
               }
             }
-            services {
+            services(first: 10000) {
               name
               baseApiUrl
               protected
-              objects {
+              objects(first: 10000) {
                 name
-                fieldTypes {
+                fieldTypes(first: 10000) {
                   isInput
                   isEnum
                   isUnion
                   name
-                  fields {
+                  fields(first: 10000) {
                     name
                     required
                     fieldType {
@@ -166,7 +166,7 @@ const res = await fetch(
                     }
                   }
                 }
-                mutations {
+                mutations(first: 10000) {
                   name
                   returnType {
                     __typename
@@ -177,7 +177,7 @@ const res = await fetch(
                       name
                     }
                   }
-                  inputs {
+                  inputs(first: 10000) {
                     name
                     baseType {
                       name
@@ -216,7 +216,7 @@ const res = await fetch(
                     required
                   }
                 }
-                resolvers {
+                resolvers(first: 10000) {
                   name
                   request {
                     queryable
@@ -226,7 +226,7 @@ const res = await fetch(
                   }
                   logic
                 }
-                queryResolvers {
+                queryResolvers(first: 10000) {
                   name
                   logic
                   request {
@@ -236,7 +236,7 @@ const res = await fetch(
                     dataKey
                   }
                 }
-                mutationResolvers {
+                mutationResolvers(first: 10000) {
                   logic
                   name
                   request {

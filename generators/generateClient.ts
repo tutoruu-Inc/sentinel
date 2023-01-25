@@ -166,7 +166,6 @@ export const client = async (services: Service[] = schema.data.services) => {
   `;
 
   await fs.writeFile('../bridge/src/index.ts', index);
-  await fs.writeFile('../bridge/index.ts', "export * from './src'");
   try {
     await fs.rm('../bridge/src/generated', { recursive: true });
   } catch (err) {}
