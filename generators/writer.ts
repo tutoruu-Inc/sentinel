@@ -57,6 +57,11 @@ export const writeServer = async (services: Service[]) => {
     `import { ApolloServer, BaseContext } from "@apollo/server";\n` +
       `import { startStandaloneServer } from "@apollo/server/standalone";\n\n` +
       `import { resolvers, typeDefs } from "./services/launchpad.js";\n\n` +
+      `import { expressMiddleware } from '@apollo/server/express4';
+      import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+      import express from 'express';
+      import http from 'http';
+      import cors from 'cors';\n\n` +
       protectedServices
         .map(
           (service) =>
@@ -65,20 +70,37 @@ export const writeServer = async (services: Service[]) => {
             }/service.js";\n`
         )
         .join('') +
-      `const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });\n\n` +
-      `const port = (process.env.PORT ?? 8000) as number;\n` +
-      `await startStandaloneServer(server, {
-        context: async ({ req, res }) => {\n` +
-      protectedServices
-        .map(
-          (service) =>
-            `\t\t${service.name.toLocaleUpperCase()}.token = req.headers.authorization ?? ${service.name.toLocaleUpperCase()}.token ?? "";\n`
-        )
-        .join('') +
-      `\t\treturn {};\n` +
-      '},\n' +
-      'listen: { port },\n});\n\n' +
-      `console.log("Sentinel up and running...")\n`
+      `\n\nconst app = express();
+      const httpServer = http.createServer(app);
+      const server = new ApolloServer<BaseContext>({
+        typeDefs,
+        resolvers,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+      });
+      await server.start();
+      
+      app.use(
+        '/',
+        cors<cors.CorsRequest>({
+          origin: '*',
+          credentials: true,
+        }),
+        express.json({ limit: '100mb' }),
+        expressMiddleware(server, {
+          context: async ({ req, res }) => {
+            ${protectedServices
+              .map(
+                (service) =>
+                  `\t\t${service.name.toLocaleUpperCase()}.token = req.headers.authorization ?? ${service.name.toLocaleUpperCase()}.token ?? "";\n`
+              )
+              .join('')}
+            return {};
+          },
+        }),
+      );\n\n` +
+      `const port = (process.env.PORT ?? 8000) as number;
+      await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+      console.log(\`🚀 Server ready at http://localhost:\${port}/\`);\n`
   );
 };
 export const writeUtils = async () => {
