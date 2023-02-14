@@ -18,6 +18,7 @@ export const generateAPI = (service: Service, resolvers: string): string => {
       `\toverride willSendRequest(request: RequestOptions) {\n` +
       `\t\trequest.headers.set('Authorization', this.token ?? request.headers.get('Authorization') ?? '');\n}\n\n`;
   }
+  
   api += `\t${resolvers}\n`;
   api += '}\n\n';
   api += `export const ${service.name
