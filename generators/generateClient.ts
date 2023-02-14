@@ -118,7 +118,7 @@ export const client = async (services: Service[] = schema.data.services) => {
     return data;
   };
 
-  type Query<T, Q extends string> = List.UnionOf<String.Split<Q, ' '>> extends keyof T ? Pick<T, List.UnionOf<String.Split<Q, ' '>>>: T;
+  type Query<T, Q extends string> = Pick<T, List.UnionOf<String.Split<Q, ' '>> extends keyof T ? List.UnionOf<String.Split<Q, ' '>> : keyof T>;
 
   export async function Query<RT extends object>(
     name: string,
