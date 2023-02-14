@@ -11,8 +11,8 @@
 	},
 	"main": "index.js",
 	"dependencies": {
-		"@apollo/datasource-rest": "^4.3.2",
 		"@apollo/server": "^4.3.0",
+		"apollo-datasource-rest": "^3.7.0",
 		"cors": "^2.8.5",
 		"express": "^4.18.2",
 		"fuse.js": "^6.6.2",
