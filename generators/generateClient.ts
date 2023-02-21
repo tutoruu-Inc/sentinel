@@ -76,7 +76,11 @@ const functions = <FN extends Query | Mutation>(
     }\`, ${
       inputs ? `{ ${query.inputs.map((i) => i.name).join(', ')} }` : '{}'
     }` +
-        `${authenticated ? ', { authorization: "Bearer " + token }' : ''}` +
+        `${
+          authenticated
+            ? ", { authorization: 'Bearer ' + (token ?? (typeof window !== 'undefined' ? localStorage.getItem('token') : '')) }"
+            : ''
+        }` +
         `))?.${query.name}\n}\n`
       );
     })
