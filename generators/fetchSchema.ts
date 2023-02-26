@@ -82,8 +82,7 @@ export interface Schema {
   };
 }
 
-const res = await fetch(
-  'https://eu-central-1-shared-euc1-02.cdn.hygraph.com/content/clc4wj38x0cao01uvcm1337ed/master',
+const res = await fetch(process.env.SCHEMA_URL,
   {
     method: 'POST',
     body: JSON.stringify({
