@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+import { config } from 'dotenv';
+config();
 
 export interface Resolver {
   name: string;
@@ -82,11 +84,10 @@ export interface Schema {
   };
 }
 
-const res = await fetch(process.env.SCHEMA_URL,
-  {
-    method: 'POST',
-    body: JSON.stringify({
-      query: `query Services {
+const res = await fetch(process.env.SCHEMA_URL as string, {
+  method: 'POST',
+  body: JSON.stringify({
+    query: `query Services {
             scalarTypes(first: 10000) {
               name
               parseLogic
@@ -249,9 +250,8 @@ const res = await fetch(process.env.SCHEMA_URL,
               slug
             }
         }`
-    })
-  }
-);
+  })
+});
 
 export const schema: Schema = (await res.json()) as Schema;
 

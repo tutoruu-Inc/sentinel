@@ -78,10 +78,10 @@ const functions = <FN extends Query | Mutation>(
     }` +
         `${
           authenticated
-            ? ", { authorization: 'Bearer ' + (token ?? (typeof window !== 'undefined' ? localStorage.getItem('token') : '')) }"
+            ? ", { authorization: 'Bearer ' + (token || (typeof window !== 'undefined' ? localStorage.getItem('token') : '')) }"
             : ''
         }` +
-        `))?.${query.name}\n}\n`
+        `)).${query.name}\n}\n`
       );
     })
     .join('');
